@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="primaryFontColor">#25272B</color>
+    <color name="secondaryFontColor">#747A95</color>
+    <color name="lightFontColor">#F7F7F7</color>
+    <color name="colorToolbar">#ffffff</color>
+    <color name="primaryColor">#3FFF00</color>
+    <color name="paymentSecondaryBtnBg">#454141</color>
+    <color name="itemRepeatColor">#FBB80F</color>
+    <color name="blueColor">#2E37FE</color>
+    <color name="redColor">#FF0000</color>
+
+</resources>

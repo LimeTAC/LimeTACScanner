@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.tagEntity.multiEntity.MultiEntityActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/activityMultiEntity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorToolbar"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back_red">
+
+        <TextView
+            android:id="@+id/txtToolbar"
+            style="@style/ToolbarText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/multi_entity"
+            android:textSize="20sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/activityMultiEntity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/neue_bold"
+        android:gravity="center"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityMultiEntity_toolbar"
+        tools:text="Tag Name" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/activityMultiEntity_entityContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityMultiEntity_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/activityMultiEntity_scanTagBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        android:fontFamily="@font/neue_bold"
+        android:padding="16dp"
+        android:text="@string/scan_next_tag"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

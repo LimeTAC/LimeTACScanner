@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <font
+        android:font="@font/neue_bold"
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        app:font="@font/neue_bold"
+        app:fontStyle="normal"
+        app:fontWeight="700" />
+    <font
+
+        android:font="@font/neue_semibold"
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        app:font="@font/neue_semibold"
+        app:fontStyle="normal"
+        app:fontWeight="700" />
+
+
+</font-family>

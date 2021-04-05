@@ -1,0 +1,78 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.limetac.scanner"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+
+        buildTypes {
+            release {
+                buildConfigField "String", 'BASE_URL', '"https://rctgsmobile.limetac.com"'
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+            debug {
+                buildConfigField "String", 'BASE_URL', '"https://devtgs.limetac.com"'
+            }
+            stage {
+                buildConfigField "String", 'BASE_URL', '"https://rctgsmobile.limetac.com"'
+                debuggable = true
+            }
+
+        }
+    }
+
+}
+repositories {
+    flatDir { dirs 'libs' }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Added Dependencies
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.amitshekhar.android:rx2-android-networking:1.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.18'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
+
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
+
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+
+}

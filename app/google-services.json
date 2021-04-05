@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "846508125534",
+    "project_id": "limetac-383f8",
+    "storage_bucket": "limetac-383f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846508125534:android:3a8e624e767cbc60ccb3cf",
+        "android_client_info": {
+          "package_name": "com.limetac.scanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846508125534-37k7g7l7hrtbe5g3urpt0b5m0d2m0qn1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgSLmXT5XU1GTRfeGGOiAUAyPqd_mYtXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846508125534-37k7g7l7hrtbe5g3urpt0b5m0d2m0qn1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

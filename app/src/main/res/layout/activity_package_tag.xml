@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.tagEntity.packageTag.PackageTagActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/activityPackageTag_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorToolbar"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back_red">
+
+        <TextView
+            android:id="@+id/txtToolbar"
+            style="@style/ToolbarText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/package_tag_title"
+            android:textSize="20sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/activityPackageTag_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/neue_bold"
+        android:gravity="center"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityPackageTag_toolbar"
+        tools:text="Package Name" />
+
+    <GridView
+        android:id="@+id/activityPackageTag_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:numColumns="2"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityPackageTag_title"
+        tools:listitem="@layout/rfid_row" />
+
+
+    <LinearLayout
+        android:id="@+id/activityPackageTag_gridTagRowOne"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/activityPackageTag_gridTagRowTwo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityPackageTag_title">
+
+        <RelativeLayout
+            android:id="@+id/activityPackageTag_rowOneLeft"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/cd_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/activityPackageTagRowOneLeft_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/neue_bold"
+                android:gravity="center"
+                android:textColor="@color/secondaryFontColor"
+                android:textSize="35sp"
+                tools:text="0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/activityPackageTag_rowOneRight"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/cd_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/activityPackageTagRowOneRight_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/neue_bold"
+                android:gravity="center"
+                android:textColor="@color/secondaryFontColor"
+                android:textSize="35sp"
+                tools:text="0" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activityPackageTag_gridTagRowTwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityPackageTag_gridTagRowOne">
+
+        <RelativeLayout
+            android:id="@+id/activityPackageTag_rowTwoLeft"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/cd_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/activityPackageTagRowTwoLeft_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/neue_bold"
+                android:gravity="center"
+                android:textColor="@color/secondaryFontColor"
+                android:textSize="35sp"
+                tools:text="0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/activityPackageTag_rowTwoRight"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/cd_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/activityPackageTagRowTwoRight_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/neue_bold"
+                android:gravity="center"
+                android:textColor="@color/secondaryFontColor"
+                android:textSize="35sp"
+                tools:text="0" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/activityPackageTag_scanTagBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        android:fontFamily="@font/neue_bold"
+        android:padding="16dp"
+        android:text="@string/scan_next_tag"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

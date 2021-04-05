@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">LimeTac Scanner</string>
+    <string name="scan_pkg">Scan Package</string>
+    <string name="scan_bin">Scan Bin</string>
+    <string name="scan_antenna"> Scan Antenna</string>
+    <string name="main_menu">Main menu</string>
+    <string name="scanning">Scan Package</string>
+    <string name="pkg_code">Package Code</string>
+    <string name="btn_submit">Submit</string>
+    <string name="btn_cancel">Cancel</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tag_code">Tag Code</string>
+    <string name="btn_clear">Clear</string>
+    <string name="str_ok">OK</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="str_confirm">Confirm</string>
+    <string name="str_Login">Connect Device</string>
+    <string name="str_LoginSuccess">Open connection successful!</string>
+    <string name="str_LoginFaild">Open Connect Failure!</string>
+    <string name="scanning_bin">Bin Scanning</string>
+    <string name="bin_code">Bin Code</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="scan_tag">Scan Tag</string>
+    <string name="settings">Settings</string>
+    <string name="pkging_item">Packaging Item</string>
+    <string name="select_packaging">Select Packaging Item</string>
+    <string name="select_view">Please select either right or left bin to scan tags!</string>
+    <string name="bin_tag_validation_error">Please scan atleast one right and left bin tag</string>
+    <string name="forklift_code">Forklift Code</string>
+    <string name="tag_entity">Tag Entity</string>
+    <string name="entity_type">Entity Tag</string>
+    <string name="enter_bin_code">Please enter Bin Code</string>
+    <string name="power">Power</string>
+    <string name="antenna_1">ANTENNA 1</string>
+    <string name="antenna_2">ANTENNA 2</string>
+    <string name="antenna_3">ANTENNA 3</string>
+    <string name="antenna_4">ANTENNA 4</string>
+    <string name="antenna_5">ANTENNA 5</string>
+    <string name="antenna_6">ANTENNA 6</string>
+    <string name="antenna_7">ANTENNA 7</string>
+    <string name="antenna_8">ANTENNA 8</string>
+    <string name="set_power">Set Power</string>
+    <string name="str_success">Power updated successfully</string>
+    <string name="str_faild">Power update failed</string>
+    <string name="advance_settings">Advance Settings</string>
+    <string name="ok">OK</string>
+    <string name="alert">alert</string>
+    <string name="yes">Yes</string>
+    <string name="please_scan_a_tag">Please Scan a Tag</string>
+    <string name="package_tag_title">Package Tag</string>
+    <string name="copy_code">Copy Code</string>
+    <string name="scan_next_tag">Scan Next Tag</string>
+    <string name="multi_entity">Multi Entity</string>
+    <string name="scan_helper">Scan Helper</string>
+    <string name="helper_tag">Helper Tag</string>
+    <string name="tag_count">Tag Count:</string>
+    <string name="select_environment">Select Environment</string>
+    <string name="release_environment">https://rctgsmobile.limetac.com</string>
+    <string name="dev_environment">https://devtgs.limetac.com</string>
+    <string name="bin_tag">Bin Tag</string>
+
+    <string-array name="powerList">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+    </string-array>
+</resources>
