@@ -10,9 +10,8 @@ import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.utils.ScreenUtils
 import kotlinx.android.synthetic.main.rfid_row.view.*
 
-class AntennaAdapter(context: Context, foodsList: ArrayList<BinTag>) : BaseAdapter() {
+class AntennaAdapter(var context: Context, foodsList: ArrayList<BinTag>) : BaseAdapter() {
     var tagList = foodsList
-    var context: Context? = context
     var previousView: View? = null
 
 
@@ -41,7 +40,7 @@ class AntennaAdapter(context: Context, foodsList: ArrayList<BinTag>) : BaseAdapt
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val tag = this.tagList[position]
-        val inflator = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflator = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val foodView = inflator.inflate(R.layout.rfid_row, null)
         foodView.layout.layoutParams.width = (ScreenUtils.getScreenWidth(context) * 0.25).toInt()
         foodView.layout.layoutParams.height = (ScreenUtils.getScreenWidth(context) * 0.25).toInt()
@@ -64,10 +63,10 @@ class AntennaAdapter(context: Context, foodsList: ArrayList<BinTag>) : BaseAdapt
              }
          }*/
         foodView.txt.text = tag.tagIndex.toString()
-        if (tag.tagCode != null && tag.tagCode.isNotEmpty()) {
+        if (tag.tagCode != null && !tag.tagCode.isNullOrEmpty()) {
             context?.resources?.getDrawable(R.drawable.cd_bg_colored)?.let {
                 foodView.layout.background = it
-                foodView.txt.text = tag.tagCode.takeLast(3)
+                foodView.txt.text = tag.tagCode!!.takeLast(3)
             }
         }
         return foodView

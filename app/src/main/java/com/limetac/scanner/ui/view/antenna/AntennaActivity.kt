@@ -189,7 +189,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             val temp = ArrayList<BinTag>()
             temp.addAll(tag)
             temp.sortBy { x -> x.tagIndex }
-            val result = temp.filter { x -> x.tagCode.isEmpty() }
+            val result = temp.filter { x -> x.tagCode.isNullOrEmpty() }
             tag.filter { x -> x.tagIndex == result[0].tagIndex }[0].tagCode = tagId
         } else {
             tag[selectedIndex].tagCode = tagId
@@ -380,7 +380,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
 
     fun areAllTagsScanned(): Boolean {
         for (element in tag) {
-            if (element.tagCode.isEmpty())
+            if (element.tagCode.isNullOrEmpty())
                 return false
         }
         return true

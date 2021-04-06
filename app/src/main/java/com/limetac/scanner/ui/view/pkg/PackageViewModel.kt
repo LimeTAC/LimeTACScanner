@@ -76,8 +76,8 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
 
         request.packingItemId = selectedItem
         for (tag in tags) {
-            if (tag.tag.isNotEmpty())
-                tagList.add(tag.tag)
+            if (!tag.tag.isNullOrEmpty())
+                tagList.add(tag.tag!!)
         }
         request.tagCodeList = tagList
 

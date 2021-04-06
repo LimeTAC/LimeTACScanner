@@ -12,8 +12,10 @@ import com.limetac.scanner.R;
 import com.limetac.scanner.utils.PublicData;
 import com.rfidread.Interface.IAsynchronousMessage;
 import com.rfidread.RFIDReader;
+import com.rfidread.usbserial.driver.UsbSerialPort;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class UHFBaseActivity extends BaseActivity {
 
@@ -130,7 +132,7 @@ public class UHFBaseActivity extends BaseActivity {
         //Get a list of Usb devices
         PublicData.sPortList = RFIDReader.GetUSBList(PublicData.mUsbManager);
         //usb connection parameter list
-        PublicData.usbListStr = RFIDReader.GetUsbDeviceStrList(PublicData.sPortList);
+        PublicData.usbListStr = RFIDReader.GetUsbDeviceStrList((List<UsbSerialPort>) PublicData.sPortList);
 
         return PublicData.usbListStr.size();
 

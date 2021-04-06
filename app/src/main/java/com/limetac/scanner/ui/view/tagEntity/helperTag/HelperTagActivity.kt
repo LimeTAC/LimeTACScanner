@@ -34,7 +34,7 @@ class HelperTagActivity : AppCompatActivity() {
                 intent.getSerializableExtra(Constants.TagScanning.BIN_RESPONSE_KEY) as BinResponse
             scannedTag = intent.getStringExtra(Constants.TagScanning.SCANNED_TAG_KEY) as String
             activityHelperTag_title.text = scannedTag
-            activityHelperTag_count.text = binResponse.tagDetails.size.toString()
+            activityHelperTag_count.text = binResponse.tagDetails?.size.toString()
             adapter =
                 HelperTagAdapter(this, scannedTag, binResponse.tagDetails as ArrayList<BinTag>)
             activityHelperTag_scanList.adapter = adapter

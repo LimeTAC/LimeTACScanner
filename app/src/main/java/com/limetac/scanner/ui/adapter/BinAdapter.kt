@@ -79,12 +79,10 @@ class BinAdapter : BaseAdapter {
         }*/
         //setColor(position, foodView.layout)
 
-        if (tag?.tag != null && tag?.tag.isNotEmpty()) {
-
-
-            foodView.txt.text = tag.tag.takeLast(3)
+        if (tag.tag != null && !tag.tag.isNullOrEmpty()) {
+            foodView.txt.text = tag.tag!!.takeLast(3)
         }
-        if (tag?.isChecked) {
+        if (tag.isChecked) {
             Handler().postDelayed({
 
                 context?.resources?.getColor(R.color.itemRepeatColor)?.let { it1 ->
@@ -97,7 +95,7 @@ class BinAdapter : BaseAdapter {
                 }
             }, 2000)
          //   setColor(position, foodView.layout)
-            foodView.txt.text = tag.tag.takeLast(3)
+            foodView.txt.text = tag.tag?.takeLast(3)
 
     }
 

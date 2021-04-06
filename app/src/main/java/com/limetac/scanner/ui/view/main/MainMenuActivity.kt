@@ -1,273 +1,224 @@
-package com.limetac.scanner.ui.view.main;
+package com.limetac.scanner.ui.view.main
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import com.limetac.scanner.R
+import com.limetac.scanner.reader.UHFBaseActivity
+import com.limetac.scanner.ui.view.antenna.AntennaActivity
+import com.limetac.scanner.ui.view.bin.BinActivity
+import com.limetac.scanner.ui.view.pkg.PackageScanningActivity
+import com.limetac.scanner.ui.view.scanHelper.ScanHelperActivity
+import com.limetac.scanner.ui.view.settings.SettingsActivity
+import com.limetac.scanner.ui.view.tag.TagScanActivity
+import com.limetac.scanner.ui.view.tagEntity.TagScanningActivity
+import com.limetac.scanner.utils.*
+import com.limetac.scanner.utils.BluetoothUtil.isBluetoothEnabled
+import com.limetac.scanner.utils.IntentUtil.openMainModule
+import com.limetac.scanner.utils.ToastUtil.createShortToast
+import com.rfidread.Interface.IAsynchronousMessage
+import com.rfidread.Models.Tag_Model
+import com.rfidread.RFIDReader
+import java.util.*
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
-import com.limetac.scanner.R;
-import com.limetac.scanner.reader.UHFBaseActivity;
-import com.limetac.scanner.ui.view.antenna.AntennaActivity;
-import com.limetac.scanner.ui.view.bin.BinActivity;
-import com.limetac.scanner.ui.view.pkg.PackageScanningActivity;
-import com.limetac.scanner.ui.view.scanHelper.ScanHelperActivity;
-import com.limetac.scanner.ui.view.settings.SettingsActivity;
-import com.limetac.scanner.ui.view.tag.TagScanActivity;
-import com.limetac.scanner.ui.view.tagEntity.TagScanningActivity;
-import com.limetac.scanner.utils.BluetoothUtil;
-import com.limetac.scanner.utils.Preference;
-import com.limetac.scanner.utils.ScreenUtils;
-import com.limetac.scanner.utils.ToastUtil;
-import com.rfidread.Interface.IAsynchronousMessage;
-import com.rfidread.Models.Tag_Model;
-import com.rfidread.RFIDReader;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class MainMenuActivity extends UHFBaseActivity {
-
-    CardView layoutPkgScan, layoutBin, layoutAntenna, layoutHelper, layout, layoutBluetooth, layoutTagEntity, layoutSettings;
-    String scannerName = "";
-    String newScannerName = "";
-    Preference preference;
-    String CURRENT_BLUETOOTH_NAME = "CURRENT_BLUETOOTH_NAME";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        preference = new Preference(this);
-        String bluetoothName = preference.getStringPrefrence(CURRENT_BLUETOOTH_NAME, "");
-        if (!bluetoothName.isEmpty()) {
-            List<String> names = RFIDReader.GetBT4DeviceStrList();
-            connectToDevice(bluetoothName);
-        } else showDialog();
-
-        initializeUI();
-        setListeners();
-    }
-
-    private void showDialog() {
-
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
-        builderSingle.setTitle("Select Bluetooth:-");
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice);
-
-
-        arrayAdapter.addAll(getBluetoothDeviceNames());
-
-        builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strName = arrayAdapter.getItem(which);
-                if (strName.equals(newScannerName))
-                    strName = scannerName;
-                connectToDevice(strName);
-
-
-            }
-        });
-        builderSingle.show();
-    }
-
-    List<String> getBluetoothDeviceNames() {
-        List<String> names = RFIDReader.GetBT4DeviceStrList();
-        List<String> bluetoothName = new ArrayList<>();
-        bluetoothName.addAll(names);
-
-        for (String name : bluetoothName) {
-            if (name.startsWith("BTR-")) {
-                newScannerName = name.replace("BTR-", "LimeTAC-");
-                scannerName = name;
-            }
-        }
-
-        if (!scannerName.isEmpty() && !newScannerName.isEmpty()) {
-            bluetoothName.remove(scannerName);
-            bluetoothName.add(newScannerName);
-        }
-        return bluetoothName;
-    }
-
-
-    void connectToDevice(String bluetoothName) {
-        if (Rfid_BT4_Init(bluetoothName, new IAsynchronousMessage() {
-            @Override
-            public void WriteDebugMsg(String s) {
-//                    Toast.makeText(MainMenuActivity.this,"Debug:"+s,Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void WriteLog(String s) {
-                //  Toast.makeText(MainMenuActivity.this,"lOG:"+s,Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void PortConnecting(String s) {
-                //   Toast.makeText(MainMenuActivity.this,"cONNETED:"+s,Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void PortClosing(String s) {
-
-            }
-
-            @Override
-            public void OutPutTags(Tag_Model tag_model) {
-
-            }
-
-            @Override
-            public void OutPutTagsOver() {
-
-            }
-
-            @Override
-            public void GPIControlMsg(int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void OutPutScanData(byte[] bytes) {
-                //   Toast.makeText(MainMenuActivity.this,"sCANNER:",Toast.LENGTH_LONG).show();
-
-            }
-        })) {
-            preference.saveStringInPrefrence(CURRENT_BLUETOOTH_NAME, bluetoothName);
-            Toast.makeText(MainMenuActivity.this, "Connected", Toast.LENGTH_LONG).show();
+class MainMenuActivity : UHFBaseActivity() {
+    var layoutPkgScan: CardView? = null
+    var layoutBin: CardView? = null
+    var layoutAntenna: CardView? = null
+    var layoutHelper: CardView? = null
+    var layout: CardView? = null
+    var layoutBluetooth: CardView? = null
+    var layoutTagEntity: CardView? = null
+    var layoutSettings: CardView? = null
+    var scannerName = ""
+    var newScannerName = ""
+    var preference: Preference? = null
+    private var CURRENT_BLUETOOTH_NAME = "CURRENT_BLUETOOTH_NAME"
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        preference = Preference(this)
+        val bluetoothName = preference?.getStringPrefrence(CURRENT_BLUETOOTH_NAME, "")
+        if (!bluetoothName.isNullOrEmpty()) {
+            val names = RFIDReader.GetBT4DeviceStrList()
+            connectToDevice(bluetoothName)
         } else {
-            Toast.makeText(MainMenuActivity.this, "You are not connected with scanner device", Toast.LENGTH_LONG).show();
+            if (isBluetoothEnabled) showDialog() else createShortToast(
+                this,
+                getString(R.string.enableBluetoothMessage)
+            )
+        }
+        initializeUI()
+        setListeners()
+    }
 
+    private fun showDialog() {
+        val builderSingle = AlertDialog.Builder(this)
+        builderSingle.setTitle("Select Bluetooth:-")
+        val arrayAdapter = ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice)
+        arrayAdapter.addAll(bluetoothDeviceNames)
+        builderSingle.setNegativeButton("cancel") { dialog, which -> dialog.dismiss() }
+        builderSingle.setAdapter(arrayAdapter) { dialog, which ->
+            var strName = arrayAdapter.getItem(which)
+            if (strName == newScannerName) strName = scannerName
+            connectToDevice(strName)
+        }
+        builderSingle.show()
+    }
+
+    private val bluetoothDeviceNames: List<String>
+        get() {
+            val names = RFIDReader.GetBT4DeviceStrList()
+            val bluetoothName: MutableList<String> = ArrayList()
+            bluetoothName.addAll(names)
+            for (name in bluetoothName) {
+                if (name.startsWith("BTR-")) {
+                    newScannerName = name.replace("BTR-", "LimeTAC-")
+                    scannerName = name
+                }
+            }
+            if (scannerName.isNotEmpty() && newScannerName.isNotEmpty()) {
+                bluetoothName.remove(scannerName)
+                bluetoothName.add(newScannerName)
+            }
+            return bluetoothName
+        }
+
+    private fun connectToDevice(bluetoothName: String?) {
+        if (Rfid_BT4_Init(bluetoothName, object : IAsynchronousMessage {
+                override fun WriteDebugMsg(s: String) {
+//                    Toast.makeText(MainMenuActivity.this,"Debug:"+s,Toast.LENGTH_LONG).show();
+                }
+
+                override fun WriteLog(s: String) {
+                    //  Toast.makeText(MainMenuActivity.this,"lOG:"+s,Toast.LENGTH_LONG).show();
+                }
+
+                override fun PortConnecting(s: String) {
+                    //   Toast.makeText(MainMenuActivity.this,"cONNETED:"+s,Toast.LENGTH_LONG).show();
+                }
+
+                override fun PortClosing(s: String) {}
+                override fun OutPutTags(tag_model: Tag_Model) {}
+                override fun OutPutTagsOver() {}
+                override fun GPIControlMsg(i: Int, i1: Int, i2: Int) {}
+                override fun OutPutScanData(bytes: ByteArray) {
+                    //   Toast.makeText(MainMenuActivity.this,"sCANNER:",Toast.LENGTH_LONG).show();
+                }
+            })) {
+            preference?.saveStringInPrefrence(CURRENT_BLUETOOTH_NAME, bluetoothName)
+            Toast.makeText(this@MainMenuActivity, "Connected", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(
+                this@MainMenuActivity,
+                "You are not connected with scanner device",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        UHF_Dispose();
-        return true;
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        UHF_Dispose()
+        return true
     }
 
     /**
      * release uhf rfid module
      */
-    public void UHF_Dispose() {
+    override fun UHF_Dispose() {
         if (_UHFSTATE) {
-            RFIDReader.CloseConn(ConnID);
-            _UHFSTATE = false;
+            RFIDReader.CloseConn(ConnID)
+            _UHFSTATE = false
         }
     }
 
-
-    private void setListeners() {
-
-        layoutPkgScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, PackageScanningActivity.class));
-            }
-        });
-
-        layoutTagEntity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, TagScanningActivity.class));
-            }
-        });
-
-        layoutAntenna.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, AntennaActivity.class));
-            }
-        });
-
-        layoutBin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, BinActivity.class));
-            }
-        });
-
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, TagScanActivity.class));
-            }
-        });
-
-        layoutSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, SettingsActivity.class));
-            }
-        });
-
-        layoutHelper.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainMenuActivity.this, ScanHelperActivity.class));
-            }
-        });
-        layoutBluetooth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (BluetoothUtil.INSTANCE.isBluetoothEnabled())
-                    showDialog();
-                else
-                    ToastUtil.createShortToast(MainMenuActivity.this, "Bluetooth not enabled");
-            }
-        });
+    private fun setListeners() {
+        layoutPkgScan?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                PackageScanningActivity::class.java
+            )
+        }
+        layoutTagEntity?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                TagScanningActivity::class.java
+            )
+        }
+        layoutAntenna?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                AntennaActivity::class.java
+            )
+        }
+        layoutBin?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                BinActivity::class.java
+            )
+        }
+        layout?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                TagScanActivity::class.java
+            )
+        }
+        layoutSettings?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                SettingsActivity::class.java
+            )
+        }
+        layoutHelper?.setOnClickListener {
+            openMainModule(
+                this@MainMenuActivity,
+                ScanHelperActivity::class.java
+            )
+        }
+        layoutBluetooth?.setOnClickListener {
+            if (isBluetoothEnabled) showDialog() else createShortToast(
+                this@MainMenuActivity, getString(
+                    R.string.enableBluetoothMessage
+                )
+            )
+        }
     }
 
-    private void initializeUI() {
-        layoutPkgScan = findViewById(R.id.layoutPkgScan);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        layoutBin = findViewById(R.id.layout);
-        layoutHelper = findViewById(R.id.layoutPkgHelper);
-        layoutAntenna = findViewById(R.id.layoutPkgAntenna);
-        layout = findViewById(R.id.layoutTagScan);
-        layoutBluetooth = findViewById(R.id.layoutBluetooth);
-        layoutTagEntity = findViewById(R.id.layoutTagEntity);
-        layoutSettings = findViewById(R.id.layoutSettings);
-        setSupportActionBar(toolbar);
-        setLayoutDimension(layoutAntenna);
-        setLayoutDimension(layoutPkgScan);
-        setLayoutDimension(layoutHelper);
-        setLayoutDimension(layoutBin);
-        setLayoutDimension(layoutBluetooth);
-        setLayoutDimension(layout);
-        setLayoutDimension(layoutTagEntity);
-        setLayoutDimension(layoutSettings);
+    private fun initializeUI() {
+        layoutPkgScan = findViewById(R.id.layoutPkgScan)
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        layoutBin = findViewById(R.id.layout)
+        layoutHelper = findViewById(R.id.layoutPkgHelper)
+        layoutAntenna = findViewById(R.id.layoutPkgAntenna)
+        layout = findViewById(R.id.layoutTagScan)
+        layoutBluetooth = findViewById(R.id.layoutBluetooth)
+        layoutTagEntity = findViewById(R.id.layoutTagEntity)
+        layoutSettings = findViewById(R.id.layoutSettings)
+        setSupportActionBar(toolbar)
+        setLayoutDimension(layoutAntenna)
+        setLayoutDimension(layoutPkgScan)
+        setLayoutDimension(layoutHelper)
+        setLayoutDimension(layoutBin)
+        setLayoutDimension(layoutBluetooth)
+        setLayoutDimension(layout)
+        setLayoutDimension(layoutTagEntity)
+        setLayoutDimension(layoutSettings)
 
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setDisplayShowHomeEnabled(true)
         }
     }
 
-    void setLayoutDimension(CardView view) {
-        view.getLayoutParams().width = (int) (ScreenUtils.getScreenWidth(this) * 0.39);
-        view.getLayoutParams().height = (int) (ScreenUtils.getScreenWidth(this) * 0.3);
+    private fun setLayoutDimension(view: CardView?) {
+        view?.layoutParams?.width = (ScreenUtils.getScreenWidth(this) * 0.39).toInt()
+        view?.layoutParams?.height = (ScreenUtils.getScreenWidth(this) * 0.3).toInt()
     }
 }

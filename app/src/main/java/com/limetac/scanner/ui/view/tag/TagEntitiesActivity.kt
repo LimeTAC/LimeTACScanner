@@ -51,9 +51,11 @@ class TagEntitiesActivity : AppCompatActivity(), IAsynchronousMessage {
                         header.visibility = View.VISIBLE
                         details.tagDetails?.let {
                             tag = details.tagDetails as ArrayList<BinTag>
-                            adapter = TagEntityAdapter(tag, details.type)
-                            list.layoutManager = LinearLayoutManager(this);
-                            list.adapter = adapter
+                            details.type?.let { details ->
+                                adapter = TagEntityAdapter(tag, details)
+                                list.layoutManager = LinearLayoutManager(this);
+                                list.adapter = adapter
+                            }
                         }
                     }
                 }

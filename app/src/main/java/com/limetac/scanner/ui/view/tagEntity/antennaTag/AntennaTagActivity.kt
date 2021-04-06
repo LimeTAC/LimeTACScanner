@@ -42,7 +42,7 @@ class AntennaTagActivity : AppCompatActivity() {
                                 activityAntennaTag_rowOneLeft.background = it
                             }
                         }
-                        activityAntennaTagRowOneLeft_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityAntennaTagRowOneLeft_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityAntennaTag_rowOneLeft.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -53,7 +53,7 @@ class AntennaTagActivity : AppCompatActivity() {
                                 activityAntennaTag_rowOneRight.background = it
                             }
                         }
-                        activityAntennaTagRowOneRight_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityAntennaTagRowOneRight_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityAntennaTagRowOneRight_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -64,7 +64,7 @@ class AntennaTagActivity : AppCompatActivity() {
                                 activityAntennaTag_rowTwoLeft.background = it
                             }
                         }
-                        activityAntennaTagRowTwoLeft_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityAntennaTagRowTwoLeft_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityAntennaTagRowTwoLeft_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -75,7 +75,7 @@ class AntennaTagActivity : AppCompatActivity() {
                                 activityAntennaTag_rowTwoRight.background = it
                             }
                         }
-                        activityAntennaTagRowTwoRight_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityAntennaTagRowTwoRight_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityAntennaTagRowTwoRight_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -87,7 +87,7 @@ class AntennaTagActivity : AppCompatActivity() {
                                 activityAntennaTag_rowTwoRight.background = it
                             }
                         }
-                        activityAntennaTagRowThreeLeft_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityAntennaTagRowThreeLeft_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityAntennaTagRowThreeLeft_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -99,7 +99,7 @@ class AntennaTagActivity : AppCompatActivity() {
                                 activityAntennaTag_rowTwoRight.background = it
                             }
                         }
-                        activityAntennaTagRowThreeRight_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityAntennaTagRowThreeRight_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityAntennaTagRowThreeRight_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }

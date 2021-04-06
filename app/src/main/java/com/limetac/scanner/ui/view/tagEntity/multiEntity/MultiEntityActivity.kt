@@ -41,7 +41,9 @@ class MultiEntityActivity : AppCompatActivity() {
             val scannedTag = intent.getStringExtra(Constants.TagScanning.SCANNED_TAG_KEY) as String
             activityMultiEntity_title.text = scannedTag
             for (entity in binResponse) {
-                addEntityText(entity.type)
+                entity.type?.let {
+                    addEntityText(it)
+                }
             }
         }
     }

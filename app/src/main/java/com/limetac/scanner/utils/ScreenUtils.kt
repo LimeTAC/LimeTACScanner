@@ -1,68 +1,58 @@
+package com.limetac.scanner.utils
 
-package com.limetac.scanner.utils;
-
-import android.app.Activity;
-import android.content.Context;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.util.DisplayMetrics;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-
-import androidx.core.content.ContextCompat;
+import android.app.Activity
+import android.content.Context
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.DisplayMetrics
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 
 /**
  * Created by Mohsina Javed on 13/01/19.
  */
-
-public final class ScreenUtils {
-
-    private ScreenUtils() {
-        // This class is not publicly instantiable
+object ScreenUtils {
+    fun getScreenHeight(context: Context): Int {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val dm = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(dm)
+        return dm.heightPixels
     }
 
-    public static int getScreenHeight(Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(dm);
-        return dm.heightPixels;
+    fun getScreenWidth(context: Context): Int {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val dm = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(dm)
+        return dm.widthPixels
     }
 
-    public static int getScreenWidth(Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(dm);
-        return dm.widthPixels;
-    }
-
-    public static int getStatusBarHeight(Context context) {
-        int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+    fun getStatusBarHeight(context: Context): Int {
+        var result = 0
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
+            result = context.resources.getDimensionPixelSize(resourceId)
         }
-        return result;
+        return result
     }
 
-    public static boolean setItemColor(Context context, int color, MenuItem item) {
-        SpannableString s = new SpannableString(item.getTitle());
-        s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, color)), 0, s.length(), 0);
-        item.setTitle(s);
-        return true;
+    fun setItemColor(context: Context?, color: Int, item: MenuItem): Boolean {
+        val s = SpannableString(item.title)
+        s.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, color)), 0, s.length, 0)
+        item.title = s
+        return true
     }
 
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+    fun hideKeyboard(activity: Activity) {
+        val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
+        var view = activity.currentFocus
         //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
-            view = new View(activity);
+            view = View(activity)
         }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
-
 }

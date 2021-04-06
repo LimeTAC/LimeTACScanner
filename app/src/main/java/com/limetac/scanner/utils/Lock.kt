@@ -1,4 +1,3 @@
-package com.limetac.scanner.utils;
+package com.limetac.scanner.utils
 
-public class Lock {
-}
+class Lock 

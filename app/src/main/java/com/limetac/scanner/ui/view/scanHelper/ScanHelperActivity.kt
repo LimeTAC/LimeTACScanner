@@ -21,7 +21,9 @@ import com.limetac.scanner.utils.ToastUtil
 import com.rfidread.Interface.IAsynchronousMessage
 import com.rfidread.Models.Tag_Model
 import com.rfidread.RFIDReader
+import kotlinx.android.synthetic.main.activity_bin.*
 import kotlinx.android.synthetic.main.activity_package_scanning.*
+import kotlinx.android.synthetic.main.activity_package_scanning.toolbar
 import kotlinx.android.synthetic.main.activity_scan_helper.*
 
 class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
@@ -35,6 +37,8 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_helper)
+        setSupportActionBar(activityScanHelper_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setupViewModel()
         setupListeners()
         observeCreateLocation()

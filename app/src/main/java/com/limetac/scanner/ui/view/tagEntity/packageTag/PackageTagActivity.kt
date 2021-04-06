@@ -46,7 +46,7 @@ class PackageTagActivity : AppCompatActivity() {
                                 activityPackageTag_rowOneLeft.background = it
                             }
                         }
-                        activityPackageTagRowOneLeft_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityPackageTagRowOneLeft_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityPackageTag_rowOneLeft.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -57,7 +57,7 @@ class PackageTagActivity : AppCompatActivity() {
                                 activityPackageTag_rowOneRight.background = it
                             }
                         }
-                        activityPackageTagRowOneRight_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityPackageTagRowOneRight_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityPackageTagRowOneRight_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -68,7 +68,7 @@ class PackageTagActivity : AppCompatActivity() {
                                 activityPackageTag_rowTwoLeft.background = it
                             }
                         }
-                        activityPackageTagRowTwoLeft_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityPackageTagRowTwoLeft_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityPackageTagRowTwoLeft_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }
@@ -79,7 +79,7 @@ class PackageTagActivity : AppCompatActivity() {
                                 activityPackageTag_rowTwoRight.background = it
                             }
                         }
-                        activityPackageTagRowTwoRight_txt.text = tagDetails[i].tagCode.takeLast(3)
+                        activityPackageTagRowTwoRight_txt.text = tagDetails[i].tagCode?.takeLast(3)
                         activityPackageTagRowTwoRight_txt.setOnClickListener {
                             showTagDialog(this, tagDetails[i].tagCode)
                         }

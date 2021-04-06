@@ -38,11 +38,11 @@ class BinTagActivity : AppCompatActivity() {
             val rightTagAdapter = BinTagAdapter(
                 this,
                 scannedTag,
-                binResponse.tagDetails.filter { it.tagType == 1 } as ArrayList<BinTag>)
+                binResponse.tagDetails?.filter { it.tagType == 1 } as ArrayList<BinTag>)
             val leftTagAdapter = BinTagAdapter(
                 this,
                 scannedTag,
-                binResponse.tagDetails.filter { it.tagType == 2 } as ArrayList<BinTag>)
+                binResponse.tagDetails?.filter { it.tagType == 2 } as ArrayList<BinTag>)
             activityHelperTag_leftTagList.adapter = leftTagAdapter
             activityBinTag_rightTagList.adapter = rightTagAdapter
             activityHelperTag_leftTagList.layoutManager = LinearLayoutManager(this)

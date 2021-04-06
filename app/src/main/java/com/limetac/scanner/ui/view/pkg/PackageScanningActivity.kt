@@ -170,7 +170,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     progress.hide()
                     //Handle Error
                     removeLatestTag()
-                   // Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    // Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
 
             }
@@ -233,7 +233,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     private fun addTag(tagId: String) {
         var i = 0;
         tag.forEachIndexed foreach@{ index, element ->
-            if (element.tag.isEmpty() && i == 0) {
+            if (element.tag.isNullOrEmpty() && i == 0) {
                 var newTag = Tag()
                 newTag.tag = tagId
                 tag[index] = newTag
@@ -314,8 +314,8 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
         adapter = TagAdapter(this, tag)
         gd.onItemClickListener = OnItemClickListener { parent, v, position, id ->
-            if (tag[position].tag.isNotEmpty())
-                openTagDetails(tag[position].tag, position)
+            if (!tag[position].tag.isNullOrEmpty())
+                openTagDetails(tag[position].tag!!, position)
         }
         btnClearScreen.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
         // btnSubmit?.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
@@ -371,7 +371,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
     fun areAllTagsScanned(): Boolean {
         for (element in tag) {
-            if (element.tag.isEmpty())
+            if (element.tag.isNullOrEmpty())
                 return false
         }
         return true
