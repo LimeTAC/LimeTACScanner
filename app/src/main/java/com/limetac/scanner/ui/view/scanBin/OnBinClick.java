@@ -1,4 +1,4 @@
-package com.limetac.scanner.ui.view.bin;
+package com.limetac.scanner.ui.view.scanBin;
 
 public interface OnBinClick {
 

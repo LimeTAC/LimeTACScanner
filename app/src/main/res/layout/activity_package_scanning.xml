@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.view.pkg.PackageScanningActivity">
+        tools:context=".ui.view.scanPackage.PackageScanningActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_back_red">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtToolbar"
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="20dp"
@@ -44,9 +44,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/pkg_code"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/txtPackageCode"
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
@@ -55,55 +55,52 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/secondaryFontColor"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
-
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:text="@string/pkging_item"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:visibility="gone" />
 
-            <Spinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spnPkgItem"
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
-                android:paddingTop="3dp"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textSize="18sp"/>
+                android:paddingTop="3dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:visibility="gone"
                 android:layout_marginLeft="10dp"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:visibility="gone" />
 
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/tag_code"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/txtTagCode"
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/secondaryFontColor"
-                android:textSize="18sp"/>
-
-
+                android:textSize="18sp" />
             <GridView
                 android:id="@+id/gd"
                 android:layout_width="wrap_content"
@@ -111,52 +108,48 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:numColumns="2"
-                tools:listitem="@layout/rfid_row"/>
+                tools:listitem="@layout/rfid_row" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-        </LinearLayout>
-
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/btnLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center_horizontal"
-
             app:layout_constraintBottom_toBottomOf="parent">
 
-
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSubmit"
                 style="@style/Button.Cancel"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_margin="12dp"
-                android:text="@string/btn_submit" />
+                android:text="@string/btn_submit"
+                android:visibility="gone" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnClearScreen"
                 style="@style/Button.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_margin="12dp"
                 android:text="@string/btn_clear" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.core.widget.ContentLoadingProgressBar
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/progress"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="50dp"
-            android:visibility="gone"
             android:layout_height="50dp"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

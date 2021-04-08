@@ -1,4 +1,4 @@
-package com.limetac.scanner.ui.view.pkg
+package com.limetac.scanner.ui.view.scanPackage
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_package_scanning.*
 class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
     private lateinit var viewModel: PackageViewModel
-    private lateinit var lastScanTagId: String
+    private var lastScanTagId: String = ""
     var tag = ArrayList<Tag>()
     lateinit var adapter: TagAdapter
     var upDataTime = 0
@@ -51,6 +51,24 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         setUI()
         setupViewModel()
         setObserver()
+    }
+
+    //initialization
+    fun init() {
+        try {
+            Thread.sleep(20)
+            try {
+                RFIDReader._Config.Stop(ConnID)
+            } catch (e: Exception) {
+                // TODO Auto-generated catch block
+                e.printStackTrace()
+            }
+            Thread.sleep(20)
+            UHF_SetTagUpdateParam() // Set the upload time of duplicate tag to 20ms
+        } catch (ee: Exception) {
+            Log.e("Scanner", ee.toString())
+        }
+        RFIDReader.HP_CONNECT.get(ConnID)?.myLog = this
     }
 
     private fun setObserver() {
@@ -74,7 +92,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                             tag[index] = tag2
                         }
 
-                        adapter = TagAdapter(this, tag)
+                        adapter = TagAdapter(this, tag, lastScanTagId)
                         gd.adapter = adapter
                     }
                 }
@@ -164,21 +182,17 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
                 Status.LOADING -> {
                     progress.show()
-
                 }
                 Status.ERROR -> {
                     progress.hide()
-                    //Handle Error
                     removeLatestTag()
-                    // Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
-
             }
         })
 
 
         btnSubmit.setOnClickListener {
-            if (txtPackageCode.text != null && txtPackageCode.text.isNotEmpty()) {
+            if (txtPackageCode.text != null && !txtPackageCode.text.isNullOrEmpty()) {
                 if (selectedItem == getString(R.string.select_packaging))
                     viewModel.submitPkg(txtPackageCode.text.toString(), tag, "")
                 else viewModel.submitPkg(txtPackageCode.text.toString(), tag, selectedItem)
@@ -200,12 +214,10 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         showRFIDAlreadyPresentDialog(lastScanTagId)
     }
 
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
-
 
     private fun clearScreen() {
         txtPackageCode.setText("")
@@ -213,11 +225,9 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         adapter.removeAll()
         adapter.notifyDataSetChanged()
         tag = ArrayList()
-
         spnPkgItem.setSelection(0)
-
         repeat(4) {
-            var newTag = Tag()
+            val newTag = Tag()
             newTag.tag = ""
             tag.add(newTag)
         }
@@ -225,24 +235,23 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
     private fun initializeEmptyBoxes() {
 
-        adapter = TagAdapter(this, tag)
+        adapter = TagAdapter(this, tag, lastScanTagId)
         gd.adapter = adapter
     }
-
 
     private fun addTag(tagId: String) {
         var i = 0;
         tag.forEachIndexed foreach@{ index, element ->
             if (element.tag.isNullOrEmpty() && i == 0) {
-                var newTag = Tag()
+                val newTag = Tag()
                 newTag.tag = tagId
                 tag[index] = newTag
                 adapter.notifyDataSetChanged()
-                i = 1;
+                i = 1
             }
         }
         lastScanTagId = tagId
-        if (txtPackageCode.text != null && txtPackageCode.text.isNotEmpty()) {
+        if (txtPackageCode.text != null && !txtPackageCode.text.isNullOrEmpty()) {
             if (selectedItem == getString(R.string.select_packaging))
                 viewModel.submitPkg(txtPackageCode.text.toString(), tag, "")
             else viewModel.submitPkg(txtPackageCode.text.toString(), tag, selectedItem)
@@ -268,7 +277,6 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         dialog.show()
     }
 
-
     private fun openTagDetails(tagCode: String, position: Int) {
 
         AlertDialog.Builder(this)
@@ -285,7 +293,6 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             } //)
             .show()
     }
-
 
     private fun removeTag(position: Int, tagCode: String) {
         adapter.removeItem(position)
@@ -304,22 +311,17 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         setSupportActionBar(toolbar);
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         handler = Handler()
-
-
         repeat(4) {
             var newTag = Tag()
             newTag.tag = ""
             tag.add(newTag)
         }
-
-        adapter = TagAdapter(this, tag)
+        adapter = TagAdapter(this, tag, lastScanTagId)
         gd.onItemClickListener = OnItemClickListener { parent, v, position, id ->
             if (!tag[position].tag.isNullOrEmpty())
                 openTagDetails(tag[position].tag!!, position)
         }
         btnClearScreen.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
-        // btnSubmit?.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
-        // viewModel.fetchTagsByPkg("C72486")
         txtPackageCode.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewModel.fetchTagsByPkg(txtPackageCode.text.toString())
@@ -328,7 +330,6 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             }
             false
         })
-
         txtTagCode.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 /*   viewModel.fetchTagsByTags(txtTagCode.text.toString())
@@ -375,24 +376,6 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                 return false
         }
         return true
-    }
-
-    //initialization
-    fun init() {
-        try {
-            Thread.sleep(20)
-            try {
-                RFIDReader._Config.Stop(ConnID)
-            } catch (e: Exception) {
-                // TODO Auto-generated catch block
-                e.printStackTrace()
-            }
-            Thread.sleep(20)
-            UHF_SetTagUpdateParam() // Set the upload time of duplicate tag to 20ms
-        } catch (ee: Exception) {
-            Log.e("Scanner", ee.toString())
-        }
-        RFIDReader.HP_CONNECT.get(ConnID)?.myLog = this
     }
 
     fun UHF_SetTagUpdateParam() {

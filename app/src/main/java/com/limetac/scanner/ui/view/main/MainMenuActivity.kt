@@ -9,9 +9,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import com.limetac.scanner.R
 import com.limetac.scanner.reader.UHFBaseActivity
-import com.limetac.scanner.ui.view.antenna.AntennaActivity
-import com.limetac.scanner.ui.view.bin.BinActivity
-import com.limetac.scanner.ui.view.pkg.PackageScanningActivity
+import com.limetac.scanner.ui.view.scanAntenna.AntennaActivity
+import com.limetac.scanner.ui.view.scanBin.BinActivity
+import com.limetac.scanner.ui.view.scanPackage.PackageScanningActivity
 import com.limetac.scanner.ui.view.scanHelper.ScanHelperActivity
 import com.limetac.scanner.ui.view.settings.SettingsActivity
 import com.limetac.scanner.ui.view.tag.TagScanActivity

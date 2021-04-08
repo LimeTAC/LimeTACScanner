@@ -29,16 +29,16 @@
         <activity android:name="com.limetac.scanner.ui.view.tagEntity.packageTag.PackageTagActivity" />
         <activity android:name="com.limetac.scanner.ui.view.settings.SettingsActivity" />
         <activity android:name="com.limetac.scanner.ui.view.tag.TagEntitiesActivity" />
-        <activity android:name="com.limetac.scanner.ui.view.antenna.AntennaActivity" />
+        <activity android:name="com.limetac.scanner.ui.view.scanAntenna.AntennaActivity" />
         <activity android:name="com.limetac.scanner.ui.view.tag.TagScanActivity" />
         <activity
-            android:name="com.limetac.scanner.ui.view.bin.BinActivity"
+            android:name="com.limetac.scanner.ui.view.scanBin.BinActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".reader.BaseActivity" />
         <activity android:name=".reader.UHFBaseActivity" />
         <activity
-            android:name="com.limetac.scanner.ui.view.pkg.PackageScanningActivity"
+            android:name="com.limetac.scanner.ui.view.scanPackage.PackageScanningActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity

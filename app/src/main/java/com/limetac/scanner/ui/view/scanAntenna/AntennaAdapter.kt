@@ -1,4 +1,4 @@
-package com.limetac.scanner.ui.view.antenna
+package com.limetac.scanner.ui.view.scanAntenna
 
 import android.content.Context
 import android.view.LayoutInflater

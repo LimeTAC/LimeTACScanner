@@ -60,6 +60,7 @@
     <string name="dev_environment">https://devtgs.limetac.com</string>
     <string name="bin_tag">Bin Tag</string>
     <string name="enableBluetoothMessage">Please enable Bluetooth</string>
+    <string name="package_completed">Package Completed</string>
 
     <string-array name="powerList">
         <item>0</item>

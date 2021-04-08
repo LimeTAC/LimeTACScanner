@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/custom_indicator_bg_oval">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/isb_progress"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -16,4 +16,4 @@
         android:textSize="12sp"
         tools:text="34" />
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

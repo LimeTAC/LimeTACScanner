@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back_red">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtToolbar"
             style="@style/ToolbarText"
             android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
             android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activityBinTag_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/activityBinTag_toolbar"
         tools:text="HASDHU78023781213S" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/activityBinTag_leftTagContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_bin_tag" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/activityBinTag_guideline"
@@ -68,7 +68,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/activityBinTag_rightTagContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_bin_tag" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/activityBinTag_scanTagBtn"

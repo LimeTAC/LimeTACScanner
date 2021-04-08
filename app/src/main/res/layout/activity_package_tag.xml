@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back_red">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtToolbar"
             style="@style/ToolbarText"
             android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
             android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activityPackageTag_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         tools:listitem="@layout/rfid_row" />
 
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/activityPackageTag_gridTagRowOne"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/activityPackageTagRowOneLeft_txt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -95,7 +95,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/activityPackageTagRowOneRight_txt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -106,9 +106,9 @@
                 android:textSize="35sp"
                 tools:text="0" />
         </RelativeLayout>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/activityPackageTag_gridTagRowTwo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/activityPackageTagRowTwoLeft_txt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -151,7 +151,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/activityPackageTagRowTwoRight_txt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -162,7 +162,7 @@
                 android:textSize="35sp"
                 tools:text="0" />
         </RelativeLayout>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/activityPackageTag_scanTagBtn"

@@ -8,8 +8,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        tools:context=".ui.view.pkg.PackageScanningActivity">
+        android:layout_height="wrap_content"
+        tools:context=".ui.view.scanPackage.PackageScanningActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar2"
@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_back_red">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtToolbar"
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
@@ -28,8 +28,7 @@
                 android:text="@string/scanning_bin" />
         </androidx.appcompat.widget.Toolbar>
 
-
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="20dp"
@@ -40,28 +39,27 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar2">
 
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/tag_code"
-                android:textSize="22sp"></TextView>
+                android:textSize="22sp"/>
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/txtTagCode2"
                 style="@style/ToolbarText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/secondaryFontColor"
-                android:textSize="20sp"></EditText>
+                android:textSize="20sp"/>
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,56 +70,50 @@
                 android:layout_marginTop="16dp"
                 android:weightSum="1">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tagCode"
                     style="@style/ToolbarText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:gravity="start"
-                    android:text="@string/tag_code"></TextView>
+                    android:text="@string/tag_code"/>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/type"
                     style="@style/ToolbarText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:gravity="start"
-                    android:text="@string/entity_type"></TextView>
-            </LinearLayout>
+                    android:text="@string/entity_type"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"></androidx.recyclerview.widget.RecyclerView>
+                android:layout_marginEnd="15dp"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-        </LinearLayout>
-
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/btnLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center_horizontal"
-
             app:layout_constraintBottom_toBottomOf="parent">
 
-
-
-
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCancel"
                 style="@style/Button.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_margin="12dp"
                 android:text="@string/btn_clear" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/progress"

@@ -1,4 +1,4 @@
-package com.limetac.scanner.ui.view.bin
+package com.limetac.scanner.ui.view.scanBin
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -115,7 +116,7 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
 
 
         btnSubmit.setOnClickListener {
-            if (txtCode.text != null && txtCode.text.isNotEmpty()) {
+            if (txtCode.text != null && !txtCode.text.isNullOrEmpty()) {
                 if (tag.size >= 2 && validateTags()) {
                     viewModel.submitBin(txtCode.text.toString(), tag)
                 } else {
@@ -203,7 +204,7 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
     private fun openTagDetails(
         code: String,
         tagCode: String,
-        view: LinearLayout,
+        view: LinearLayoutCompat,
         tv: TextView
     ) {
 
@@ -255,27 +256,12 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
 
         btnCancel.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
         btnSubmit?.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
-        //viewModel.fetchTagsByPkg("C72486")
         txtCode.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                /*               if (txtCode.text.toString() == previousBinCode) {
-                    clearScreenAfterCheckMarkClick()
-                    ScreenUtils.hideKeyboard(this)
-                    viewModel.getEntity(txtCode.text.toString())
-                    return@OnEditorActionListener true
-                } else {
-                    previousBinCode = txtCode.text.toString()
-                    clearScreenAfterCheckMarkClick()
-                    ScreenUtils.hideKeyboard(this)
-                    viewModel.getEntity(txtCode.text.toString())
-                    return@OnEditorActionListener true
-                }*/
-                //    previousBinCode = txtCode.text.toString()
                 clearScreenAfterCheckMarkClick()
                 ScreenUtils.hideKeyboard(this)
                 viewModel.getEntity(txtCode.text.toString())
                 return@OnEditorActionListener true
-
             }
             false
         })
@@ -283,8 +269,6 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
 
         txtTagCode.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                /*   viewModel.fetchTagsByTags(txtTagCode.text.toString())
-                   ScreenUtils.hideKeyboard(this)*/
                 val selectedIndex: Int = getTagSelectedIndex(txtTagCode.text.toString())
                 if (selectedIndex == -1) {
                     if (view != null) {
@@ -368,17 +352,17 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun setActiveDimension(view: View) {
-        val params = view.getLayoutParams()
+        val params = view.layoutParams
         params.height = (ScreenUtils.getScreenWidth(this) * 0.55).toInt()
         params.width = (ScreenUtils.getScreenWidth(this) * 0.4).toInt()
-        view.setLayoutParams(params)
+        view.layoutParams = params
     }
 
     private fun setDefaultDimension(view: View) {
-        val params = view.getLayoutParams()
+        val params = view.layoutParams
         params.height = (ScreenUtils.getScreenWidth(this) * 0.5).toInt()
         params.width = (ScreenUtils.getScreenWidth(this) * 0.35).toInt()
-        view.setLayoutParams(params)
+        view.layoutParams = params
     }
 
     //initialization

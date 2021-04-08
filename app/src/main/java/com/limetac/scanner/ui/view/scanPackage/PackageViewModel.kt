@@ -1,4 +1,4 @@
-package com.limetac.scanner.ui.view.pkg
+package com.limetac.scanner.ui.view.scanPackage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

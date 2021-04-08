@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.repository.*
-import com.limetac.scanner.ui.view.pkg.PackageViewModel
-import com.limetac.scanner.ui.view.antenna.AntennaViewModel
-import com.limetac.scanner.ui.view.bin.BinViewModel
+import com.limetac.scanner.ui.view.scanPackage.PackageViewModel
+import com.limetac.scanner.ui.view.scanAntenna.AntennaViewModel
+import com.limetac.scanner.ui.view.scanBin.BinViewModel
 import com.limetac.scanner.ui.view.main.MainViewModel
 import com.limetac.scanner.ui.view.scanHelper.ScanHelperViewModel
 import com.limetac.scanner.ui.view.tag.TagEntityViewModel

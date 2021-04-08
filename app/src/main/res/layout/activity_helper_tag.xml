@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back_red">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/activityScanHelper_txtToolbar"
             style="@style/ToolbarText"
             android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:text="@string/helper_tag" />
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activityHelperTag_title"
         style="@style/ToolbarText"
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/activityHelperTag_count"
         tools:text="JAS8989239819YT" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activityHelperTag_countLabel"
         style="@style/ToolbarText"
         android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toStartOf="@+id/activityHelperTag_count"
         app:layout_constraintTop_toBottomOf="@+id/activityHelperTag_toolbar" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activityHelperTag_count"
         style="@style/ToolbarText"
         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/activityHelperTag_toolbar"
         tools:text="4" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/activityHelperTag_scanContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_helper_scan" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/activityHelperTag_scanTagBtn"

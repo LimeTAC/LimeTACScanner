@@ -1,4 +1,4 @@
-package com.limetac.scanner.ui.view.antenna
+package com.limetac.scanner.ui.view.scanAntenna
 
 import android.app.AlertDialog
 import android.app.Dialog

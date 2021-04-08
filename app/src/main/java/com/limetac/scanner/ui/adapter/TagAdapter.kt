@@ -14,10 +14,12 @@ import kotlinx.android.synthetic.main.rfid_row.view.*
 class TagAdapter : BaseAdapter {
     var tagList = ArrayList<Tag>()
     val context: Context
+    val latestScannedTag: String
 
-    constructor(context: Context, foodsList: ArrayList<Tag>) : super() {
+    constructor(context: Context, foodsList: ArrayList<Tag>, latestScannedTag: String) : super() {
         this.context = context
         this.tagList = foodsList
+        this.latestScannedTag = latestScannedTag
     }
 
     override fun getCount(): Int {
@@ -50,10 +52,19 @@ class TagAdapter : BaseAdapter {
         val foodView = inflator.inflate(R.layout.rfid_row, null)
         foodView.layout.layoutParams.width = (ScreenUtils.getScreenWidth(context) * 0.3).toInt()
 
+        for (item in tagList) {
+            if (item.tag == latestScannedTag) {
+                foodView.txt.setTextColor(context.resources.getColor(R.color.white))
+                foodView.txt.textSize = 35f
+            } else {
+                foodView.txt.setTextColor(context.resources.getColor(R.color.secondaryFontColor))
+                foodView.txt.textSize = 30f
+            }
+        }
         if (tag.tag != null && !tag.tag.isNullOrEmpty()) {
             context?.resources?.getDrawable(R.drawable.cd_bg_colored)?.let {
                 foodView.layout.background = it
-                foodView.txt.text = tag.tag!!.takeLast(3)
+                foodView.txt.text = tag.tag?.takeLast(3)
             }
         }
         if (tag.isChecked) {

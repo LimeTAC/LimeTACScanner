@@ -79,7 +79,6 @@ class TagEntitiesActivity : AppCompatActivity(), IAsynchronousMessage {
         return true
     }
 
-
     private fun setUI() {
         setSupportActionBar(toolbar2);
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
