@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name="com.limetac.scanner.ui.view.tagEntity.binTag.BinTagActivity"></activity>
+        <activity android:name="com.limetac.scanner.ui.view.tagEntity.binTag.BinTagActivity"/>
         <activity android:name="com.limetac.scanner.ui.view.tagEntity.helperTag.HelperTagActivity" />
         <activity android:name="com.limetac.scanner.ui.view.tagEntity.multiEntity.MultiEntityActivity" />
         <activity

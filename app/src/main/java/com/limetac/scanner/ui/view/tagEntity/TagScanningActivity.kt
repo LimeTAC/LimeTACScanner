@@ -64,18 +64,17 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     activityTagScanningProgress.hide()
                     it.data?.let { binResponse ->
                         isScanned = false
-                        if (binResponse.size > 1) {
-                            val intent = Intent(this, MultiEntityActivity::class.java)
-                            intent.putExtra("EntityList", Gson().toJson(binResponse))
-                            intent.putExtra(Constants.TagScanning.SCANNED_TAG_KEY, scannedTag)
-                            startActivity(intent)
-                        } else
-
-                            if (binResponse[0].isBin) {
+                        /*         if (binResponse.size > 1) {
+                                     val intent = Intent(this, MultiEntityActivity::class.java)
+                                     intent.putExtra("EntityList", Gson().toJson(binResponse))
+                                     intent.putExtra(Constants.TagScanning.SCANNED_TAG_KEY, scannedTag)
+                                     startActivity(intent)
+                                 } else*/
+                        if (binResponse[2].isBin) {
                             val intent = Intent(this, BinTagActivity::class.java)
                             intent.putExtra(
                                 Constants.TagScanning.BIN_RESPONSE_KEY,
-                                binResponse[0]
+                                binResponse[2]
                             )
                             intent.putExtra(
                                 Constants.TagScanning.SCANNED_TAG_KEY,
@@ -84,12 +83,13 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                             startActivity(intent)
                         } else {
                             if (binResponse.isNotEmpty()) {
-                                when (binResponse[0].type) {
+                                when (binResponse[2].type) {
                                     PACKAGE -> {
-                                        val intent = Intent(this, PackageTagActivity::class.java)
+                                        val intent =
+                                            Intent(this, PackageTagActivity::class.java)
                                         intent.putExtra(
                                             Constants.TagScanning.BIN_RESPONSE_KEY,
-                                            binResponse[0]
+                                            binResponse[2]
                                         )
                                         intent.putExtra(
                                             Constants.TagScanning.SCANNED_TAG_KEY,
@@ -98,10 +98,11 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                                         startActivity(intent)
                                     }
                                     FORKLIFT -> {
-                                        val intent = Intent(this, AntennaTagActivity::class.java)
+                                        val intent =
+                                            Intent(this, AntennaTagActivity::class.java)
                                         intent.putExtra(
                                             Constants.TagScanning.BIN_RESPONSE_KEY,
-                                            binResponse[0]
+                                            binResponse[2]
                                         )
                                         intent.putExtra(
                                             Constants.TagScanning.SCANNED_TAG_KEY,
@@ -113,7 +114,7 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                                         val intent = Intent(this, HelperTagActivity::class.java)
                                         intent.putExtra(
                                             Constants.TagScanning.BIN_RESPONSE_KEY,
-                                            binResponse[0]
+                                            binResponse[2]
                                         )
                                         intent.putExtra(
                                             Constants.TagScanning.SCANNED_TAG_KEY,

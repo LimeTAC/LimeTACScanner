@@ -9,8 +9,10 @@ import com.google.gson.reflect.TypeToken
 import com.limetac.scanner.R
 import com.limetac.scanner.data.api.request.BinResponse
 import com.limetac.scanner.utils.Constants
+import kotlinx.android.synthetic.main.activity_bin.*
 import kotlinx.android.synthetic.main.activity_multi_entity.*
 import kotlinx.android.synthetic.main.activity_tag_scan.*
+import kotlinx.android.synthetic.main.activity_tag_scan.toolbar
 
 
 class MultiEntityActivity : AppCompatActivity() {
@@ -20,8 +22,6 @@ class MultiEntityActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_entity)
-        setSupportActionBar(activityMultiEntity_toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         init()
     }
 
@@ -31,6 +31,8 @@ class MultiEntityActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        setSupportActionBar(activityMultiEntity_toolbar);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
         activityMultiEntity_scanTagBtn.setOnClickListener {
             finish()
         }
@@ -39,7 +41,7 @@ class MultiEntityActivity : AppCompatActivity() {
             val type = object : TypeToken<List<BinResponse?>?>() {}.type
             binResponse = Gson().fromJson(intent.getStringExtra("EntityList"), type)
             val scannedTag = intent.getStringExtra(Constants.TagScanning.SCANNED_TAG_KEY) as String
-            activityMultiEntity_title.text = scannedTag
+            activityMultiEntity_title.text = binResponse[0].code
             for (entity in binResponse) {
                 entity.type?.let {
                     addEntityText(it)

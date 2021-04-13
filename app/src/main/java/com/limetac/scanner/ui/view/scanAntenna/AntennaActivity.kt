@@ -40,7 +40,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
 
     private lateinit var viewModel: AntennaViewModel
     private var selectedIndex = -1
-    var tag = ArrayList<BinTag>()
+    var tagList = ArrayList<BinTag>()
     lateinit var adapter: AntennaAdapter
     var upDataTime = 0
     lateinit var handler: Handler
@@ -60,7 +60,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun setObserver() {
-        viewModel.getDetails().observe(this, Observer {
+        viewModel.getDetails().observe(this, {
             when (it.status) {
                 Status.SUCCESS -> {
                     progress.hide()
@@ -90,15 +90,15 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                 Status.SUCCESS -> {
                     progress.hide()
                     it.data?.let { details ->
-                        details.tagDetails?.forEachIndexed { index, element ->
-                            val tag2 = BinTag()
-                            tag2.tagCode = element.tagCode
-                            tag2.tagIndex = element.tagIndex
-                            tag[index] = tag2
+                        details.tagDetails?.let { tagDetails ->
+                            for (tag in tagDetails) {
+                                val tag2 = BinTag()
+                                tag2.tagCode = tag.tagCode
+                                tag2.tagIndex = tag.tagIndex
+                                tagList[convertIndex(tag.tagIndex)] = tag2
+                            }
                         }
-
-                        adapter = AntennaAdapter(this, tag)
-                        gd.adapter = adapter
+                        adapter.updateList(tagList)
                     }
                 }
                 Status.LOADING -> {
@@ -116,7 +116,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
 
         activityAntenna_btnSubmit.setOnClickListener {
             if (!txtPackageCode.text.isNullOrEmpty()) {
-                viewModel.submitAntenna(txtPackageCode.text.toString(), tag)
+                viewModel.submitAntenna(txtPackageCode.text.toString(), tagList)
             } else
                 ToastUtil.createShortToast(this, "Please enter a forklift code")
         }
@@ -164,35 +164,32 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
         txtTagCode.setText("")
         adapter.removeAll()
         adapter.notifyDataSetChanged()
-        tag = ArrayList()
-        adapter = AntennaAdapter(this, tag)
-
-
-        var i = 1;
-
+        tagList = ArrayList()
+        adapter = AntennaAdapter(this, tagList)
+        var i = 1
         repeat(6) {
-            var newTag = BinTag()
+            val newTag = BinTag()
             assignIndex(newTag, i)
             newTag.tagCode = ""
-            tag.add(newTag)
+            tagList.add(newTag)
             i += 1
         }
     }
 
     private fun initializeEmptyBoxes() {
-        adapter = AntennaAdapter(this, tag)
+        adapter = AntennaAdapter(this, tagList)
         gd.adapter = adapter
     }
 
     private fun addTag(tagId: String) {
         if (selectedIndex == -1) {
             val temp = ArrayList<BinTag>()
-            temp.addAll(tag)
+            temp.addAll(tagList)
             temp.sortBy { x -> x.tagIndex }
             val result = temp.filter { x -> x.tagCode.isNullOrEmpty() }
-            tag.filter { x -> x.tagIndex == result[0].tagIndex }[0].tagCode = tagId
+            tagList.filter { x -> x.tagIndex == result[0].tagIndex }[0].tagCode = tagId
         } else {
-            tag[selectedIndex].tagCode = tagId
+            tagList[selectedIndex].tagCode = tagId
         }
         adapter.notifyDataSetChanged()
         isViewSelected = false
@@ -204,8 +201,8 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.transaction_dialog_alert)
         val width = (this.resources.displayMetrics.widthPixels * 0.8).toInt()
-        dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val btnStatusAction = dialog.findViewById<Button>(R.id.btnOk)
         btnStatusAction.setOnClickListener { v: View? ->
             clearScreen()
@@ -301,15 +298,13 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             val newTag = BinTag()
             assignIndex(newTag, i)
             newTag.tagCode = ""
-            tag.add(newTag)
+            tagList.add(newTag)
             i += 1
         }
 
-        adapter = AntennaAdapter(this, tag)
+        adapter = AntennaAdapter(this, tagList)
         gd.adapter = adapter
         gd.onItemClickListener = AdapterView.OnItemClickListener { parent, v, position, id ->
-            /* if (tag[position].tagCode.isNotEmpty())
-                 openTagDetails(tag[position].tagCode, position)*/
             selectedIndex = position
             val v: View = gd.getChildAt(position)
         }
@@ -365,7 +360,20 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                 print("x is neither 1 nor 2")
             }
         }
+    }
 
+    private fun convertIndex(index: Int): Int {
+        return when (index) {
+            7 -> 0
+            8 -> 1
+            3 -> 2
+            6 -> 3
+            1 -> 4
+            2 -> 5
+            else -> { // Note the block
+                1
+            }
+        }
     }
 
     fun setSelectViewIndex(position: Int) {
@@ -379,7 +387,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     fun areAllTagsScanned(): Boolean {
-        for (element in tag) {
+        for (element in tagList) {
             if (element.tagCode.isNullOrEmpty())
                 return false
         }
@@ -393,7 +401,6 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             try {
                 RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
             } catch (e: Exception) {
-                // TODO Auto-generated catch block
                 e.printStackTrace()
             }
             Thread.sleep(20)
@@ -443,7 +450,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             runOnUiThread(object : Runnable {
                 var currenttagModel: Tag_Model? = tag_model
                 override fun run() {
-                    synchronized(tag) {
+                    synchronized(tagList) {
                         val tagId = currenttagModel?._EPC + currenttagModel?._TID
                         if (isViewSelected) {
                             if (getTagSelectedIndex(tagId) == -1) {
@@ -470,7 +477,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun getTagSelectedIndex(tagId: String): Int {
-        tag.forEachIndexed { index, element ->
+        tagList.forEachIndexed { index, element ->
             if (element.tagCode == tagId)
                 return index
         }

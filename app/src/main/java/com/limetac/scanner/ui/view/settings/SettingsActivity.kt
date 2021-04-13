@@ -9,6 +9,7 @@ import com.limetac.scanner.R
 import com.limetac.scanner.reader.UHFBaseActivity
 import com.limetac.scanner.reader.UHFBaseActivity.ConnID
 import com.limetac.scanner.utils.DialogUtil
+import com.limetac.scanner.utils.Preference
 import com.limetac.scanner.utils.ToastUtil
 import com.rfidread.RFIDReader
 import com.warkiz.widget.IndicatorSeekBar
@@ -86,9 +87,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-
         activitySettings_advanceSettingBtn.setOnClickListener {
-            DialogUtil.showEnvironmentChangeDialog(this)
+            val preference = Preference(this)
+            DialogUtil.showEnvironmentChangeDialog(this, preference)
         }
 
         activitySettings_seekBar.onSeekChangeListener = object : OnSeekChangeListener {

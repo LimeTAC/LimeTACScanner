@@ -325,10 +325,10 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
             }
 
             if (isRight) {
-                (right as LinearLayout).addView(valueTV)
+                (right as LinearLayoutCompat).addView(valueTV)
                 right.background = resources.getDrawable(R.color.primaryColor)
             } else {
-                (left as LinearLayout).addView(valueTV)
+                (left as LinearLayoutCompat).addView(valueTV)
                 left.background = resources.getDrawable(R.color.primaryColor)
             }
         }

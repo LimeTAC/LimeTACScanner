@@ -8,9 +8,11 @@ import com.limetac.scanner.data.api.request.BinResponse
 import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.ui.view.tagEntity.helperTag.HelperTagAdapter
 import com.limetac.scanner.utils.Constants
+import kotlinx.android.synthetic.main.activity_bin.*
 import kotlinx.android.synthetic.main.activity_bin_tag.*
 import kotlinx.android.synthetic.main.activity_helper_tag.*
 import kotlinx.android.synthetic.main.activity_tag_scan.*
+import kotlinx.android.synthetic.main.activity_tag_scan.toolbar
 
 class BinTagActivity : AppCompatActivity() {
 
@@ -19,8 +21,6 @@ class BinTagActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bin_tag)
-        setSupportActionBar(activityBinTag_toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         init()
     }
 
@@ -30,11 +30,13 @@ class BinTagActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        setSupportActionBar(activityBinTag_toolbar);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
         intent?.extras?.let {
             binResponse =
                 intent.getSerializableExtra(Constants.TagScanning.BIN_RESPONSE_KEY) as BinResponse
             scannedTag = intent.getStringExtra(Constants.TagScanning.SCANNED_TAG_KEY) as String
-            activityBinTag_title.text = scannedTag
+            activityBinTag_title.text = binResponse.code
             val rightTagAdapter = BinTagAdapter(
                 this,
                 scannedTag,

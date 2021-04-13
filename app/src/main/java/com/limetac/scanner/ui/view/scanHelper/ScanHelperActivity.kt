@@ -117,7 +117,7 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
                 Status.ERROR -> {
                     activityScanHelper_progress.hide()
-                    ToastUtil.createShortToast(this, it.message)
+                  //  ToastUtil.createShortToast(this, it.message)
                 }
             }
         })

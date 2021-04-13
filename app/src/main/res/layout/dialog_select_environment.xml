@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:tag="@string/release_environment"
                 android:text="@string/release_environment" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
@@ -47,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:tag="@string/dev_environment"
                 android:text="@string/dev_environment" />
         </RadioGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>

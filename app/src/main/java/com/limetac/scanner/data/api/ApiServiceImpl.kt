@@ -1,6 +1,5 @@
 package com.limetac.scanner.data.api
 
-import com.limetac.scanner.BuildConfig
 import com.limetac.scanner.data.api.request.*
 import com.limetac.scanner.data.model.PackagingItem
 import com.limetac.scanner.data.model.PkgDetails
@@ -14,14 +13,14 @@ import org.json.JSONObject
 class ApiServiceImpl : ApiService {
 
     override fun getUsers(): Single<List<User>> {
-        return Rx2AndroidNetworking.get(CURRENT_ENVIRONMENT + "https://5e510330f2c0d300147c034c.mockapi.io/users")
+        return Rx2AndroidNetworking.get("https://5e510330f2c0d300147c034c.mockapi.io/users")
             .build()
             .getObjectListSingle(User::class.java)
     }
 
-    override fun getTagsByPkg(pkgRequest: PkgRequest): Single<PkgDetails> {
+    override fun getTagsByPkg(request: PkgRequest): Single<PkgDetails> {
         return Rx2AndroidNetworking.post("$CURRENT_ENVIRONMENT/api/inventory/GetPackageTagsByPackageCode")
-            .addApplicationJsonBody(pkgRequest)
+            .addApplicationJsonBody(request)
             .build()
             .getObjectSingle(PkgDetails::class.java)
     }

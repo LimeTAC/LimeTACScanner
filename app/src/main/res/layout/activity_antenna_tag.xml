@@ -7,7 +7,7 @@
     tools:context=".ui.view.tagEntity.packageTag.PackageTagActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/activityPackageTag_toolbar"
+        android:id="@+id/activityAntennaTag_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorToolbar"
@@ -18,27 +18,26 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtToolbar"
             style="@style/ToolbarText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/package_tag_title"
-            android:textSize="20sp" />
+            android:text="@string/antenna_tag" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activityAntennaTag_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
         android:fontFamily="@font/neue_bold"
         android:gravity="center"
-        android:textSize="25sp"
         android:maxLines="2"
-        android:ellipsize="end"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityPackageTag_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/activityAntennaTag_toolbar"
         tools:text="Forklift Name" />
 
     <ScrollView
@@ -85,9 +84,9 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/neue_bold"
                         android:gravity="center"
+                        android:text="7"
                         android:textColor="@color/secondaryFontColor"
-                        android:textSize="35sp"
-                        tools:text="0" />
+                        android:textSize="35sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -108,9 +107,9 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/neue_bold"
                         android:gravity="center"
+                        android:text="8"
                         android:textColor="@color/secondaryFontColor"
-                        android:textSize="35sp"
-                        tools:text="0" />
+                        android:textSize="35sp" />
                 </RelativeLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -145,9 +144,9 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/neue_bold"
                         android:gravity="center"
+                        android:text="3"
                         android:textColor="@color/secondaryFontColor"
-                        android:textSize="35sp"
-                        tools:text="0" />
+                        android:textSize="35sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -168,9 +167,9 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/neue_bold"
                         android:gravity="center"
+                        android:text="6"
                         android:textColor="@color/secondaryFontColor"
-                        android:textSize="35sp"
-                        tools:text="0" />
+                        android:textSize="35sp" />
                 </RelativeLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -205,9 +204,9 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/neue_bold"
                         android:gravity="center"
+                        android:text="1"
                         android:textColor="@color/secondaryFontColor"
-                        android:textSize="35sp"
-                        tools:text="0" />
+                        android:textSize="35sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -228,9 +227,9 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/neue_bold"
                         android:gravity="center"
+                        android:text="2"
                         android:textColor="@color/secondaryFontColor"
-                        android:textSize="35sp"
-                        tools:text="0" />
+                        android:textSize="35sp" />
                 </RelativeLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -242,12 +241,12 @@
         android:layout_height="wrap_content"
         android:background="@color/primaryColor"
         android:fontFamily="@font/neue_bold"
+        android:padding="16dp"
         android:text="@string/scan_next_tag"
         android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:padding="16dp"
-        android:textSize="16sp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

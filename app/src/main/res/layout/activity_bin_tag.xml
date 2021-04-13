@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.tagEntity.binTag.BinTagActivity">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/activityBinTag_toolbar"
         android:layout_width="match_parent"
@@ -18,10 +19,9 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtToolbar"
             style="@style/ToolbarText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/bin_tag"
-            android:textSize="20sp" />
+            android:text="@string/bin_tag" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -35,11 +35,11 @@
         android:fontFamily="@font/neue_bold"
         android:gravity="center"
         android:maxLines="2"
-        android:textSize="25sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activityBinTag_toolbar"
-        tools:text="HASDHU78023781213S" />
+        tools:text="HASDHU78023781" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/activityBinTag_leftTagContainer"

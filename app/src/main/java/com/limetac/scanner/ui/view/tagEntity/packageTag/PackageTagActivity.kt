@@ -7,8 +7,10 @@ import com.limetac.scanner.data.api.request.BinResponse
 import com.limetac.scanner.utils.Constants.TagScanning.BIN_RESPONSE_KEY
 import com.limetac.scanner.utils.Constants.TagScanning.SCANNED_TAG_KEY
 import com.limetac.scanner.utils.DialogUtil.showTagDialog
+import kotlinx.android.synthetic.main.activity_bin.*
 import kotlinx.android.synthetic.main.activity_package_tag.*
 import kotlinx.android.synthetic.main.activity_tag_scan.*
+import kotlinx.android.synthetic.main.activity_tag_scan.toolbar
 
 
 class PackageTagActivity : AppCompatActivity() {
@@ -20,8 +22,6 @@ class PackageTagActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_package_tag)
-        setSupportActionBar(activityPackageTag_toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         init()
     }
 
@@ -31,13 +31,15 @@ class PackageTagActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        setSupportActionBar(activityPackageTag_toolbar);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
         activityPackageTag_scanTagBtn.setOnClickListener {
             finish()
         }
         intent?.extras?.let {
             binResponse = intent.getSerializableExtra(BIN_RESPONSE_KEY) as BinResponse
             scannedTag = intent.getStringExtra(SCANNED_TAG_KEY) as String
-            activityPackageTag_title.text = scannedTag
+            activityPackageTag_title.text = binResponse.code
             binResponse.tagDetails?.let { tagDetails ->
                 for (i in tagDetails.indices) {
                     if (i == 0) {

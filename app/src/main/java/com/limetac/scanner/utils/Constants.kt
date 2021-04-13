@@ -15,4 +15,8 @@ object Constants {
         const val FORKLIFT = "Forklift"
         const val LOCATION = "Location"
     }
+
+    object PreferenceKeys {
+        const val CURRENT_ENVIRONMENT_KEY = "CURRENT_ENVIRONMENT_KEY"
+    }
 }

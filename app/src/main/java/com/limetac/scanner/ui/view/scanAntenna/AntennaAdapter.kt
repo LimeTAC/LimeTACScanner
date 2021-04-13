@@ -10,8 +10,7 @@ import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.utils.ScreenUtils
 import kotlinx.android.synthetic.main.rfid_row.view.*
 
-class AntennaAdapter(var context: Context, foodsList: ArrayList<BinTag>) : BaseAdapter() {
-    var tagList = foodsList
+class AntennaAdapter(var context: Context, var tagList: ArrayList<BinTag>) : BaseAdapter() {
     var previousView: View? = null
 
 
@@ -70,6 +69,11 @@ class AntennaAdapter(var context: Context, foodsList: ArrayList<BinTag>) : BaseA
             }
         }
         return foodView
+    }
+
+    fun updateList(tagList: ArrayList<BinTag>) {
+        this.tagList = tagList
+        notifyDataSetChanged()
     }
 
 

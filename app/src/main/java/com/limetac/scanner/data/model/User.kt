@@ -10,5 +10,9 @@ data class User(
     @SerializedName("email")
     val email: String = "",
     @SerializedName("avatar")
-    val avatar: String = ""
+    val avatar: String = "",
+    @SerializedName("mobileNumber")
+    val mobileNumber: String = "",
+    @SerializedName("password")
+    val password: String = ""
 )

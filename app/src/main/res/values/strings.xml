@@ -61,6 +61,7 @@
     <string name="bin_tag">Bin Tag</string>
     <string name="enableBluetoothMessage">Please enable Bluetooth</string>
     <string name="package_completed">Package Completed</string>
+    <string name="antenna_tag">Antenna Tag</string>
 
     <string-array name="powerList">
         <item>0</item>
