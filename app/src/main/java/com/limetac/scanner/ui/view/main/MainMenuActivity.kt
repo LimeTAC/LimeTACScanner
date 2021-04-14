@@ -41,6 +41,7 @@ class MainMenuActivity : UHFBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         preference = Preference(this)
         val bluetoothName = preference?.getStringPrefrence(CURRENT_BLUETOOTH_NAME, "")
         if (!bluetoothName.isNullOrEmpty()) {

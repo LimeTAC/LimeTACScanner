@@ -62,6 +62,7 @@
     <string name="enableBluetoothMessage">Please enable Bluetooth</string>
     <string name="package_completed">Package Completed</string>
     <string name="antenna_tag">Antenna Tag</string>
+    <string name="tag_associated_with_other_entity_msg">This Tag is associated with some other entity. Please press scan next tag!</string>
 
     <string-array name="powerList">
         <item>0</item>

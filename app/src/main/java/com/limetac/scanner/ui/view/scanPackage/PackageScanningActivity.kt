@@ -77,19 +77,19 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                 Status.SUCCESS -> {
                     progress.hide()
                     it.data?.let { details ->
-                        packagingItems.let {
-                            details.packingItemId.let { it ->
-                                if (packagingItems.contains(it.toString())) {
-                                    val index = packagingItems.indexOf(it.toString())
-                                    spnPkgItem.setSelection(index)
-                                }
-                            }
-                        }
-
+                        /*             packagingItems.let {
+                                         details.packingItemId.let { it ->
+                                             if (packagingItems.contains(it.toString())) {
+                                                 val index = packagingItems.indexOf(it.toString())
+                                                 spnPkgItem.setSelection(index)
+                                             }
+                                         }
+                                     }*/
                         details.tags?.forEachIndexed { index, element ->
                             val tag2 = Tag()
                             tag2.tag = element
-                            tag[index] = tag2
+                            if (index < tag.size)
+                                tag[index] = tag2
                         }
 
                         adapter = TagAdapter(this, tag, lastScanTagId)
@@ -264,8 +264,8 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.transaction_dialog_alert)
         val width = (this.resources.displayMetrics.widthPixels * 0.8).toInt()
-        dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val btnStatusAction =
             dialog.findViewById<Button>(R.id.btnOk)
         btnStatusAction.setOnClickListener { v: View? ->

@@ -27,7 +27,7 @@ class HelperTagAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.setIsRecyclable(false);
+        holder.setIsRecyclable(false)
         val tag = tagList[position]
         holder.title.text = tag.tagCode
         if (tag.tagCode == scannedTag) {

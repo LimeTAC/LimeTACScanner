@@ -19,7 +19,10 @@ class AntennaAdapter(var context: Context, var tagList: ArrayList<BinTag>) : Bas
     }
 
     override fun getItem(position: Int): Any {
-        return tagList[position]
+        return if (position >= tagList.size)
+            tagList[0]
+        else
+            tagList[position]
     }
 
 
@@ -44,23 +47,6 @@ class AntennaAdapter(var context: Context, var tagList: ArrayList<BinTag>) : Bas
         foodView.layout.layoutParams.width = (ScreenUtils.getScreenWidth(context) * 0.25).toInt()
         foodView.layout.layoutParams.height = (ScreenUtils.getScreenWidth(context) * 0.25).toInt()
         foodView.layout.setOnClickListener(GridItemClick(position));
-        /* foodView.layout.setOnClickListener {
-             if (previousView != null) {
-                 previousView?.layout?.layoutParams?.width =
-                     (ScreenUtils.getScreenWidth(context) * 0.25).toInt()
-                 previousView?.layout?.layoutParams?.height =
-                     (ScreenUtils.getScreenWidth(context) * 0.25).toInt()
-             }
-
-             val params = foodView.layout.layoutParams
-             params.height = (ScreenUtils.getScreenWidth(context) * 0.3).toInt()
-             params.width = (ScreenUtils.getScreenWidth(context) * 0.3).toInt()
-             foodView.layout.layoutParams = params
-             previousView = foodView
-             if (context is AntennaActivity) {
-                 (context as AntennaActivity).setSelectViewIndex(position)
-             }
-         }*/
         foodView.txt.text = tag.tagIndex.toString()
         if (tag.tagCode != null && !tag.tagCode.isNullOrEmpty()) {
             context?.resources?.getDrawable(R.drawable.cd_bg_colored)?.let {

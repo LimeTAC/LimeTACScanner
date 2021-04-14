@@ -11,16 +11,9 @@ import com.limetac.scanner.data.model.Tag
 import com.limetac.scanner.utils.ScreenUtils
 import kotlinx.android.synthetic.main.rfid_row.view.*
 
-class TagAdapter : BaseAdapter {
-    var tagList = ArrayList<Tag>()
-    val context: Context
-    val latestScannedTag: String
-
-    constructor(context: Context, foodsList: ArrayList<Tag>, latestScannedTag: String) : super() {
-        this.context = context
-        this.tagList = foodsList
-        this.latestScannedTag = latestScannedTag
-    }
+class TagAdapter(val context: Context, foodsList: ArrayList<Tag>, private val latestScannedTag: String) :
+    BaseAdapter() {
+    var tagList = foodsList
 
     override fun getCount(): Int {
         return tagList.size
