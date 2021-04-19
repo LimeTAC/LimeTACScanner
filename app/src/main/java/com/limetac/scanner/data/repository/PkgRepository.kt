@@ -3,6 +3,8 @@ package com.limetac.scanner.data.repository
 import com.google.gson.JsonObject
 import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.api.request.AddPkgRequest
+import com.limetac.scanner.data.api.request.BinResponse
+import com.limetac.scanner.data.api.request.EntityTagRequest
 import com.limetac.scanner.data.api.request.PkgRequest
 import com.limetac.scanner.data.model.PackagingItem
 import com.limetac.scanner.data.model.PkgDetails
@@ -19,7 +21,6 @@ class PkgRepository(private val apiHelper: ApiHelper) {
 
     fun releaseTag(request: PkgRequest): Single<JSONObject> {
         return apiHelper.releaseTag(request)
-
     }
     fun getTagsByTag(request:PkgRequest): Single<PkgDetails> {
         return apiHelper.getTagsByTag(request)}
@@ -29,4 +30,8 @@ class PkgRepository(private val apiHelper: ApiHelper) {
 
     fun getPackagingItem(request:PkgRequest): Observable<List<PackagingItem>> {
         return apiHelper.getPackagingItems(request)}
+
+    fun getEntityByTagCode(request: EntityTagRequest): Single<List<BinResponse>> {
+        return apiHelper.getEntityByTagCode(request)
+    }
 }

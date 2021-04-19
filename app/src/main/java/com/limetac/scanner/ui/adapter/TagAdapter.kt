@@ -74,7 +74,6 @@ class TagAdapter(val context: Context, foodsList: ArrayList<Tag>, private val la
             }
         }
 
-
         return foodView
     }
 }

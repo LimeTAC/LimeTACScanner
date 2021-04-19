@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.limetac.scanner.data.api.request.AddPkgRequest
+import com.limetac.scanner.data.api.request.BinResponse
+import com.limetac.scanner.data.api.request.EntityTagRequest
 import com.limetac.scanner.data.api.request.PkgRequest
 import com.limetac.scanner.data.model.PackagingItem
 import com.limetac.scanner.data.model.PkgDetails
@@ -17,7 +19,9 @@ import io.reactivex.schedulers.Schedulers
 class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
 
     private val pkgDetails = MutableLiveData<Resource<PkgDetails>>()
-    private val tagDetails = MutableLiveData<Resource<PkgDetails>>()
+
+    //    private val tagDetails = MutableLiveData<Resource<PkgDetails>>()
+    private val tagDetails = MutableLiveData<Resource<List<BinResponse>>>()
     private val submitPkg = MutableLiveData<Resource<PkgDetails>>()
     private val packagingItems = MutableLiveData<Resource<List<PackagingItem>>>()
     private val compositeDisposable = CompositeDisposable()
@@ -70,17 +74,15 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
     }
 
     fun submitPkg(pkgCode: String, tags: List<Tag>, selectedItem: String) {
-        var request = AddPkgRequest();
+        val request = AddPkgRequest();
         request.packageCode = pkgCode
-        var tagList = ArrayList<String>()
-
+        val tagList = ArrayList<String>()
         request.packingItemId = selectedItem
         for (tag in tags) {
             if (!tag.tag.isNullOrEmpty())
                 tagList.add(tag.tag!!)
         }
         request.tagCodeList = tagList
-
         pkgDetails.postValue(Resource.loading(null))
         compositeDisposable.add(
             repository.submitPkg(request)
@@ -94,9 +96,30 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
         )
     }
 
+    fun getTagEntity(code: String) {
+        val request = EntityTagRequest()
+        request.tagCode = code
+        tagDetails.postValue(Resource.loading(null))
+        compositeDisposable.add(
+            repository.getEntityByTagCode(request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ pkg ->
+                    tagDetails.postValue(Resource.success(pkg))
+                }, {
+                    tagDetails.postValue(Resource.error("Something Went Wrong", null))
+                })
+        )
+    }
 
+    fun getTagDetails(): LiveData<Resource<List<BinResponse>>> {
+        return tagDetails;
+    }
+
+
+/*
     fun fetchTagsByTags(tag: String) {
-        var request = PkgRequest();
+        val request = PkgRequest();
         request.tagCode = tag
 
         pkgDetails.postValue(Resource.loading(null))
@@ -111,6 +134,7 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
                 })
         )
     }
+*/
 
 
     override fun onCleared() {
@@ -122,9 +146,9 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
         return pkgDetails
     }
 
-    fun getTagDetails(): LiveData<Resource<PkgDetails>> {
+/*    fun getTagDetails(): LiveData<Resource<PkgDetails>> {
         return tagDetails
-    }
+    }*/
 
     fun getPkgStatus(): LiveData<Resource<PkgDetails>> {
         return submitPkg

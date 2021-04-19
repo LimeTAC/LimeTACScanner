@@ -22,6 +22,7 @@ import com.limetac.scanner.utils.Constants
 import com.limetac.scanner.utils.Constants.Entity.FORKLIFT
 import com.limetac.scanner.utils.Constants.Entity.LOCATION
 import com.limetac.scanner.utils.Constants.Entity.PACKAGE
+import com.limetac.scanner.utils.DialogUtil
 import com.limetac.scanner.utils.Status
 import com.rfidread.Interface.IAsynchronousMessage
 import com.rfidread.Models.Tag_Model
@@ -70,11 +71,12 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                             intent.putExtra(Constants.TagScanning.SCANNED_TAG_KEY, scannedTag)
                             startActivity(intent)
                         } else {
-                            if (binResponse[0].isBin) {
+                            val response = binResponse[0]
+                            if (response.isBin) {
                                 val intent = Intent(this, BinTagActivity::class.java)
                                 intent.putExtra(
                                     Constants.TagScanning.BIN_RESPONSE_KEY,
-                                    binResponse[0]
+                                    response
                                 )
                                 intent.putExtra(
                                     Constants.TagScanning.SCANNED_TAG_KEY,
@@ -83,26 +85,33 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                                 startActivity(intent)
                             } else {
                                 if (binResponse.isNotEmpty()) {
-                                    when (binResponse[0].type) {
+                                    when (response.type) {
                                         PACKAGE -> {
-                                            val intent =
-                                                Intent(this, PackageTagActivity::class.java)
-                                            intent.putExtra(
-                                                Constants.TagScanning.BIN_RESPONSE_KEY,
-                                                binResponse[0]
-                                            )
-                                            intent.putExtra(
-                                                Constants.TagScanning.SCANNED_TAG_KEY,
-                                                scannedTag
-                                            )
-                                            startActivity(intent)
+                                            response.tagDetails?.let { tags ->
+                                                if (tags.size <= 4) {
+                                                    val intent = Intent(this, PackageTagActivity::class.java)
+                                                    intent.putExtra(
+                                                        Constants.TagScanning.BIN_RESPONSE_KEY,
+                                                        response
+                                                    )
+                                                    intent.putExtra(
+                                                        Constants.TagScanning.SCANNED_TAG_KEY,
+                                                        scannedTag
+                                                    )
+                                                    startActivity(intent)
+                                                } else
+                                                    DialogUtil.showOKDialog(
+                                                        this,
+                                                        "Alert",
+                                                        "Something went wrong. Please notify LimeTAC with package id")
+                                            }
                                         }
                                         FORKLIFT -> {
                                             val intent =
                                                 Intent(this, AntennaTagActivity::class.java)
                                             intent.putExtra(
                                                 Constants.TagScanning.BIN_RESPONSE_KEY,
-                                                binResponse[0]
+                                                response
                                             )
                                             intent.putExtra(
                                                 Constants.TagScanning.SCANNED_TAG_KEY,
@@ -114,7 +123,7 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                                             val intent = Intent(this, HelperTagActivity::class.java)
                                             intent.putExtra(
                                                 Constants.TagScanning.BIN_RESPONSE_KEY,
-                                                binResponse[0]
+                                                response
                                             )
                                             intent.putExtra(
                                                 Constants.TagScanning.SCANNED_TAG_KEY,

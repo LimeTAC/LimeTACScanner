@@ -1,5 +1,6 @@
 package com.limetac.scanner.utils
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -84,5 +85,17 @@ object DialogUtil {
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    fun showOKDialog(context: Context, title: String, message: String) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(
+                android.R.string.ok
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

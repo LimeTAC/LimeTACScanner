@@ -2,17 +2,20 @@ package com.limetac.scanner.ui.view.scanPackage
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.TextView.BufferType
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -22,10 +25,12 @@ import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.api.ApiServiceImpl
 import com.limetac.scanner.data.model.Tag
 import com.limetac.scanner.reader.UHFBaseActivity.ConnID
-import com.limetac.scanner.ui.base.ViewModelFactory
 import com.limetac.scanner.ui.adapter.TagAdapter
+import com.limetac.scanner.ui.base.ViewModelFactory
+import com.limetac.scanner.utils.DialogUtil
 import com.limetac.scanner.utils.ScreenUtils
 import com.limetac.scanner.utils.Status
+import com.limetac.scanner.utils.ToastUtil
 import com.rfidread.Interface.IAsynchronousMessage
 import com.rfidread.Models.Tag_Model
 import com.rfidread.RFIDReader
@@ -36,13 +41,14 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
     private lateinit var viewModel: PackageViewModel
     private var lastScanTagId: String = ""
-    var tag = ArrayList<Tag>()
+    var tagList = ArrayList<Tag>()
     lateinit var adapter: TagAdapter
     var upDataTime = 0
     lateinit var handler: Handler
     var packagingItems = ArrayList<String>()
     var selectedItem: String = ""
     var previousScanId: String = ""
+    var hasScanned = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,47 +74,46 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         } catch (ee: Exception) {
             Log.e("Scanner", ee.toString())
         }
-        RFIDReader.HP_CONNECT.get(ConnID)?.myLog = this
+        RFIDReader.HP_CONNECT[ConnID]?.myLog = this
     }
 
     private fun setObserver() {
         viewModel.getPkgDetails().observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
+                    hasScanned = false
                     progress.hide()
                     it.data?.let { details ->
-                        /*             packagingItems.let {
-                                         details.packingItemId.let { it ->
-                                             if (packagingItems.contains(it.toString())) {
-                                                 val index = packagingItems.indexOf(it.toString())
-                                                 spnPkgItem.setSelection(index)
-                                             }
-                                         }
-                                     }*/
-                        details.tags?.forEachIndexed { index, element ->
-                            val tag2 = Tag()
-                            tag2.tag = element
-                            if (index < tag.size)
-                                tag[index] = tag2
+                        details.tags?.let { tags ->
+                            if (tags.size <= tagList.size) {
+                                tags.forEachIndexed { index, element ->
+                                    val tag2 = Tag()
+                                    tag2.tag = element
+                                    if (index < tagList.size)
+                                        tagList[index] = tag2
+                                }
+                                adapter = TagAdapter(this, tagList, lastScanTagId)
+                                gd.adapter = adapter
+                            } else
+                                DialogUtil.showOKDialog(
+                                    this,
+                                    "Alert",
+                                    "Something went wrong. Please notify LimeTAC with package id"
+                                )
                         }
-
-                        adapter = TagAdapter(this, tag, lastScanTagId)
-                        gd.adapter = adapter
                     }
                 }
                 Status.LOADING -> {
                     progress.show()
-
                 }
                 Status.ERROR -> {
+                    hasScanned = false
                     progress.hide()
                     //Handle Error
                     initializeEmptyBoxes()
                 }
-
             }
         })
-
         viewModel.getPackagingItems().observe(this, Observer { it ->
             when (it.status) {
                 Status.SUCCESS -> {
@@ -140,35 +145,33 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
             }
         })
-
-
-
         viewModel.getTagDetails().observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
+                    hasScanned = false
                     progress.hide()
-                    it.data?.let { details ->
-                        /* var isTagAlreadyPresent =
-                             tag.filter { s -> s == txtTagCode.text.toString() }
-                        if (isTagAlreadyPresent== null)*/
-                        //addTag()
+                    it.data?.let { binResponse ->
+                        if (!binResponse.isNullOrEmpty()) {
+                            removeLatestTag()
+                        } else {
+                            insertTag()
+                        }
                     }
                 }
                 Status.LOADING -> {
                     progress.show()
                 }
                 Status.ERROR -> {
+                    hasScanned = false
                     progress.hide()
-                    //Handle Error
                     Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 }
             }
         })
-
-
         viewModel.getPkgStatus().observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
+                    hasScanned = false
                     progress.hide()
                     it.data?.let { details ->
                         Toast.makeText(
@@ -184,31 +187,45 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     progress.show()
                 }
                 Status.ERROR -> {
+                    hasScanned = false
                     progress.hide()
-                    removeLatestTag()
+                    ToastUtil.createShortToast(this, it.message)
+                    //  removeLatestTag()
                 }
             }
         })
-
-
-        btnSubmit.setOnClickListener {
+/*        btnSubmit.setOnClickListener {
             if (txtPackageCode.text != null && !txtPackageCode.text.isNullOrEmpty()) {
                 if (selectedItem == getString(R.string.select_packaging))
-                    viewModel.submitPkg(txtPackageCode.text.toString(), tag, "")
-                else viewModel.submitPkg(txtPackageCode.text.toString(), tag, selectedItem)
+                    viewModel.submitPkg(txtPackageCode.text.toString(), tagList, "")
+                else viewModel.submitPkg(txtPackageCode.text.toString(), tagList, selectedItem)
             }
-        }
-
+        }*/
         btnClearScreen.setOnClickListener {
             clearScreen()
         }
     }
 
+    private fun insertTag() {
+        if (verifyTagListSize()) {
+            if (selectedItem == getString(R.string.select_packaging)) {
+                viewModel.submitPkg(txtPackageCode.text.toString(), tagList, "")
+            } else {
+                viewModel.submitPkg(
+                    txtPackageCode.text.toString(),
+                    tagList,
+                    selectedItem
+                )
+            }
+        }
+    }
+
     private fun removeLatestTag() {
-        tag.forEachIndexed { index, tag ->
+        tagList.forEachIndexed { index, tag ->
             if (tag.tag == lastScanTagId) {
                 adapter.removeItem(index)
                 adapter.notifyDataSetChanged()
+                return@forEachIndexed
             }
         }
         showRFIDAlreadyPresentDialog(lastScanTagId)
@@ -224,38 +241,49 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         txtTagCode.setText("")
         adapter.removeAll()
         adapter.notifyDataSetChanged()
-        tag = ArrayList()
+        tagList = ArrayList()
         spnPkgItem.setSelection(0)
         repeat(4) {
             val newTag = Tag()
             newTag.tag = ""
-            tag.add(newTag)
+            tagList.add(newTag)
         }
     }
 
     private fun initializeEmptyBoxes() {
-
-        adapter = TagAdapter(this, tag, lastScanTagId)
+        tagList.clear()
+        repeat(4) {
+            var newTag = Tag()
+            newTag.tag = ""
+            tagList.add(newTag)
+        }
+        adapter = TagAdapter(this, tagList, lastScanTagId)
         gd.adapter = adapter
     }
 
     private fun addTag(tagId: String) {
         var i = 0;
-        tag.forEachIndexed foreach@{ index, element ->
+        tagList.forEachIndexed foreach@{ index, element ->
             if (element.tag.isNullOrEmpty() && i == 0) {
                 val newTag = Tag()
                 newTag.tag = tagId
-                tag[index] = newTag
+                tagList[index] = newTag
                 adapter.notifyDataSetChanged()
                 i = 1
             }
         }
-        lastScanTagId = tagId
         if (txtPackageCode.text != null && !txtPackageCode.text.isNullOrEmpty()) {
-            if (selectedItem == getString(R.string.select_packaging))
-                viewModel.submitPkg(txtPackageCode.text.toString(), tag, "")
-            else viewModel.submitPkg(txtPackageCode.text.toString(), tag, selectedItem)
+            viewModel.getTagEntity(tagId)
+        } else
+            hasScanned = false
+    }
+
+    private fun verifyTagListSize(): Boolean {
+        for (tag in tagList) {
+            if (tag.tag.isNullOrEmpty())
+                return false
         }
+        return true
     }
 
     private fun showDialog() {
@@ -278,19 +306,15 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun openTagDetails(tagCode: String, position: Int) {
-
         AlertDialog.Builder(this)
             .setTitle(tagCode)
-            .setMessage("Are you sure you want to delete this tag?") // Specifying a listener allows you to take an action before dismissing the dialog.
-            // The dialog is automatically dismissed when a dialog button is clicked.
-            .setPositiveButton(android.R.string.yes,
-                DialogInterface.OnClickListener { dialog, which ->
-                    // Continue with delete operation
-                    removeTag(position, tagCode)
-                }) // A null listener allows the button to dismiss the dialog and take no further action.
+            .setMessage("Are you sure you want to delete this tag?")
+            .setPositiveButton(android.R.string.yes) { dialog, which ->
+                removeTag(position, tagCode)
+            }
             .setNegativeButton(android.R.string.no) { dialog, which ->
 
-            } //)
+            }
             .show()
     }
 
@@ -314,19 +338,23 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         repeat(4) {
             var newTag = Tag()
             newTag.tag = ""
-            tag.add(newTag)
+            tagList.add(newTag)
         }
-        adapter = TagAdapter(this, tag, lastScanTagId)
+        adapter = TagAdapter(this, tagList, lastScanTagId)
         gd.onItemClickListener = OnItemClickListener { parent, v, position, id ->
-            if (!tag[position].tag.isNullOrEmpty())
-                openTagDetails(tag[position].tag!!, position)
+            if (!tagList[position].tag.isNullOrEmpty())
+                openTagDetails(tagList[position].tag!!, position)
         }
         btnClearScreen.width = (ScreenUtils.getScreenWidth(this) * 0.38).toInt()
         txtPackageCode.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel.fetchTagsByPkg(txtPackageCode.text.toString())
-                ScreenUtils.hideKeyboard(this)
-                return@OnEditorActionListener true
+            if (txtPackageCode.text.toString().trim().isNotEmpty()) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    viewModel.fetchTagsByPkg(txtPackageCode.text.toString())
+                    ScreenUtils.hideKeyboard(this)
+                    return@OnEditorActionListener true
+                }
+            } else {
+                ToastUtil.createShortToast(this, "Please enter a correct package name")
             }
             false
         })
@@ -338,7 +366,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                 if (selectedIndex == -1) {
                     addTag(txtTagCode.text.toString())
                 } else {
-                    tag[selectedIndex].isChecked = true
+                    tagList[selectedIndex].isChecked = true
                     adapter.notifyDataSetChanged()
                 }
                 ScreenUtils.hideKeyboard(this)
@@ -356,22 +384,28 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun showRFIDAlreadyPresentDialog(lastScanTagId: String) {
-        // if (lastScanTagId != previousScanId) {
+        val builder = SpannableStringBuilder()
+        val first = "The Tag $lastScanTagId is associated with another entity."
+        builder.append(first)
+        val second = " Please scan another tag."
+        val redSpannable = SpannableString(second)
+        redSpannable.setSpan(ForegroundColorSpan(Color.RED), 0, second.length, 0)
+        builder.append(redSpannable)
+
         AlertDialog.Builder(this)
-            .setTitle("Tag already exit!")
-            .setMessage("The Tag $lastScanTagId already exists against a package.")
+            .setTitle("Alert")
+            .setMessage(builder)
             .setPositiveButton(
-                android.R.string.yes
+                android.R.string.ok
             ) { dialog, _ ->
                 previousScanId = lastScanTagId
                 dialog.dismiss()
             }
             .show()
-        //  }
     }
 
     fun areAllTagsScanned(): Boolean {
-        for (element in tag) {
+        for (element in tagList) {
             if (element.tag.isNullOrEmpty())
                 return false
         }
@@ -416,14 +450,19 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             runOnUiThread(object : Runnable {
                 var currenttagModel: Tag_Model? = tag_model
                 override fun run() {
-                    synchronized(tag) {
-                        val tagId = currenttagModel?._EPC + currenttagModel?._TID
-                        val selectedIndex: Int = getTagSelectedIndex(tagId)
-                        if (selectedIndex == -1) {
-                            addTag(tagId)
-                        } else {
-                            tag[selectedIndex].isChecked = true
-                            adapter.notifyDataSetChanged()
+                    synchronized(tagList) {
+                        if (!hasScanned) {
+                            val tagId = currenttagModel?._EPC + currenttagModel?._TID
+                            val selectedIndex: Int = getTagSelectedIndex(tagId)
+                            if (selectedIndex == -1) {
+                                lastScanTagId = tagId
+                                addTag(tagId)
+                                hasScanned = true
+                            } else {
+                                tagList[selectedIndex].isChecked = true
+                                adapter.notifyDataSetChanged()
+                                hasScanned = false
+                            }
                         }
                     }
                 }
@@ -434,7 +473,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun getTagSelectedIndex(tagId: String): Int {
-        tag.forEachIndexed { index, element ->
+        tagList.forEachIndexed { index, element ->
             if (element.tag == tagId)
                 return index
 

@@ -15,6 +15,7 @@ import com.limetac.scanner.ui.view.tagEntity.TagScanningViewModel
 import com.limetac.scanner.utils.Constants
 import com.limetac.scanner.utils.Constants.TagScanning.BIN_RESPONSE_KEY
 import com.limetac.scanner.utils.Constants.TagScanning.SCANNED_TAG_KEY
+import com.limetac.scanner.utils.DialogUtil
 import com.limetac.scanner.utils.DialogUtil.showTagDialog
 import com.limetac.scanner.utils.Status
 import com.limetac.scanner.utils.ToastUtil
@@ -134,16 +135,26 @@ class PackageTagActivity : AppCompatActivity(), IAsynchronousMessage {
                                 getString(R.string.tag_associated_with_other_entity_msg)
                             )
                         } else {
+                            val response = binResponse[0]
                             if (binResponse.isNotEmpty()) {
-                                when (binResponse[0].type) {
+                                when (response.type) {
                                     Constants.Entity.PACKAGE -> {
-                                        if (binResponse[0].code == activityPackageTag_title.text) {
-                                            findAndHighlightCode()
-                                        } else {
-                                            ToastUtil.createLongToast(
-                                                this,
-                                                "This Tag is associated with some other Package. Please press scan next tag!"
-                                            )
+                                        response.tagDetails?.let { tags ->
+                                            if (tags.size <= 4) {
+                                                if (response.code == activityPackageTag_title.text) {
+                                                    findAndHighlightCode()
+                                                } else {
+                                                    ToastUtil.createLongToast(
+                                                        this,
+                                                        "This Tag is associated with some other Package. Please press scan next tag!"
+                                                    )
+                                                }
+                                            } else
+                                                DialogUtil.showOKDialog(
+                                                    this,
+                                                    "Alert",
+                                                    "Something went wrong. Please notify LimeTAC with package id"
+                                                )
                                         }
                                     }
                                     Constants.Entity.FORKLIFT -> {
