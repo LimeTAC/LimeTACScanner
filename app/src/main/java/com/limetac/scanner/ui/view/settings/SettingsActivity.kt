@@ -86,7 +86,13 @@ class SettingsActivity : AppCompatActivity() {
         return rt
     }
 
+    private fun getScannerBattery() {
+        val batteryPower = RFIDReader.GetBluetoothDeviceSOC(ConnID)
+        activitySettings_batteryValue.text = batteryPower.plus("%")
+    }
+
     private fun initListeners() {
+        getScannerBattery()
         activitySettings_advanceSettingBtn.setOnClickListener {
             val preference = Preference(this)
             DialogUtil.showEnvironmentChangeDialog(this, preference)

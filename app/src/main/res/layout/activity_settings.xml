@@ -27,6 +27,34 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/activitySettings_batteryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/neue_semibold"
+        android:text="Scanner Battery:"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_toolbar" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/activitySettings_batteryValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/neue_bold"
+        tools:text="57%"
+        android:textColor="@color/primaryColor"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_toolbar"
+        app:layout_constraintBottom_toBottomOf="@id/activitySettings_batteryTitle"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/activitySettings_powerTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +65,7 @@
         android:text="@string/power"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_batteryTitle" />
 
     <com.warkiz.widget.IndicatorStayLayout
         android:id="@+id/activitySettings_seekBarContainer"
