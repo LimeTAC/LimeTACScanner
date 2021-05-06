@@ -3,12 +3,10 @@ package com.limetac.scanner.ui.view.scanPackage
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.limetac.scanner.data.api.request.AddPkgRequest
-import com.limetac.scanner.data.api.request.BinResponse
-import com.limetac.scanner.data.api.request.EntityTagRequest
-import com.limetac.scanner.data.api.request.PkgRequest
+import com.limetac.scanner.data.api.request.*
 import com.limetac.scanner.data.model.PackagingItem
 import com.limetac.scanner.data.model.PkgDetails
+import com.limetac.scanner.data.model.ReleaseTagResponse
 import com.limetac.scanner.data.model.Tag
 import com.limetac.scanner.data.repository.PkgRepository
 import com.limetac.scanner.utils.Resource
@@ -19,12 +17,12 @@ import io.reactivex.schedulers.Schedulers
 class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
 
     private val pkgDetails = MutableLiveData<Resource<PkgDetails>>()
-
-    //    private val tagDetails = MutableLiveData<Resource<PkgDetails>>()
     private val tagDetails = MutableLiveData<Resource<List<BinResponse>>>()
     private val submitPkg = MutableLiveData<Resource<PkgDetails>>()
     private val packagingItems = MutableLiveData<Resource<List<PackagingItem>>>()
     private val compositeDisposable = CompositeDisposable()
+    private val releaseDetails = MutableLiveData<Resource<ReleaseTagResponse>>()
+
 
 
     fun fetchTagsByPkg(code: String) {
@@ -43,7 +41,7 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
         )
     }
 
-    fun releaseTag(code: String) {
+/*    fun releaseTag(code: String) {
         val request = PkgRequest();
         request.tagCode = code
         compositeDisposable.add(
@@ -51,14 +49,26 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ pkg ->
-
                 }, {
                     var error = it.message
                 })
         )
+    }*/
+
+    fun releaseRequest(releaseTagRequest: ReleaseTagRequest) {
+        compositeDisposable.add(
+            repository.releaseTag(releaseTagRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    releaseDetails.postValue(Resource.success(it))
+                }, {
+                    releaseDetails.postValue(Resource.error(it.message.toString(), null))
+                })
+        )
     }
 
-    fun getPackaging() {
+  /*  fun getPackaging() {
         var request = PkgRequest();
         packagingItems.postValue(Resource.loading(null))
         compositeDisposable.add(
@@ -71,7 +81,7 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
                     packagingItems.postValue(Resource.error("Something Went Wrong", null))
                 })
         )
-    }
+    }*/
 
     fun submitPkg(pkgCode: String, tags: List<Tag>, selectedItem: String) {
         val request = AddPkgRequest();
@@ -116,27 +126,6 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
         return tagDetails;
     }
 
-
-/*
-    fun fetchTagsByTags(tag: String) {
-        val request = PkgRequest();
-        request.tagCode = tag
-
-        pkgDetails.postValue(Resource.loading(null))
-        compositeDisposable.add(
-            repository.getTagsByTag(request)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ pkg ->
-                    tagDetails.postValue(Resource.success(pkg))
-                }, {
-                    tagDetails.postValue(Resource.error("Something Went Wrong", null))
-                })
-        )
-    }
-*/
-
-
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
@@ -146,10 +135,6 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
         return pkgDetails
     }
 
-/*    fun getTagDetails(): LiveData<Resource<PkgDetails>> {
-        return tagDetails
-    }*/
-
     fun getPkgStatus(): LiveData<Resource<PkgDetails>> {
         return submitPkg
     }
@@ -157,4 +142,9 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
     fun getPackagingItems(): LiveData<Resource<List<PackagingItem>>> {
         return packagingItems
     }
+
+    fun getReleaseLiveData(): LiveData<Resource<ReleaseTagResponse>> {
+        return releaseDetails;
+    }
+
 }

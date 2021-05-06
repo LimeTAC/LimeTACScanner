@@ -18,7 +18,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.limetac.scanner.R
 import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.api.ApiServiceImpl
+import com.limetac.scanner.data.api.request.BinResponse
+import com.limetac.scanner.data.api.request.ReleaseTagRequest
 import com.limetac.scanner.data.model.BinTag
+import com.limetac.scanner.data.model.EntityType
 import com.limetac.scanner.reader.UHFBaseActivity
 import com.limetac.scanner.ui.base.ViewModelFactory
 import com.limetac.scanner.utils.ScreenUtils
@@ -35,8 +38,9 @@ import kotlinx.android.synthetic.main.activity_package_scanning.progress
 import kotlinx.android.synthetic.main.activity_package_scanning.toolbar
 import kotlinx.android.synthetic.main.activity_package_scanning.txtPackageCode
 import kotlinx.android.synthetic.main.activity_package_scanning.txtTagCode
+import kotlinx.android.synthetic.main.activity_scan_helper.*
 
-class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
+class AntennaActivity : AppCompatActivity(), IAsynchronousMessage, ScanAntennaNotifier {
 
     private lateinit var viewModel: AntennaViewModel
     private var selectedIndex = -1
@@ -48,6 +52,9 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     var dialogTag: String = ""
     var isViewSelected = false
     var previousView: View? = null
+    private var binResponse: BinResponse? = null
+    private var displayIndex = -1
+    private var position = -1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +64,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
         setupViewModel()
         setObserver()
         observeVerifyTag()
+        observeReleaseTag()
     }
 
     private fun setObserver() {
@@ -79,7 +87,9 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                 Status.ERROR -> {
                     progress.hide()
                     //Handle Error
-                    initializeEmptyBoxes()
+                    //  clearScreen()
+                    txtPackageCode.setText("")
+                    txtTagCode.setText("")
                     showItemNotExistDialog()
                 }
             }
@@ -90,7 +100,9 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                 Status.SUCCESS -> {
                     progress.hide()
                     it.data?.let { details ->
+                        binResponse = details
                         details.tagDetails?.let { tagDetails ->
+                            clearScreen()
                             for (tag in tagDetails) {
                                 val tag2 = BinTag()
                                 tag2.tagCode = tag.tagCode
@@ -105,10 +117,12 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                     progress.show()
                 }
                 Status.ERROR -> {
+                    // clearScreen()
+                    txtPackageCode.setText("")
+                    txtTagCode.setText("")
                     showItemNotExistDialog()
                     progress.hide()
                     //Handle Error
-                    initializeEmptyBoxes()
                 }
             }
         })
@@ -122,8 +136,44 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
         }
 
         btnClearScreen.setOnClickListener {
+            txtPackageCode.setText("")
+            txtTagCode.setText("")
             clearScreen()
         }
+    }
+
+    private fun observeReleaseTag() {
+        viewModel.getReleaseLiveData().observe(this, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    progress.hide()
+                    ToastUtil.createShortToast(
+                        this@AntennaActivity,
+                        "Tag has been released successfully"
+                    )
+                    val newTag = BinTag()
+                    newTag.tagIndex = displayIndex
+                    newTag.tagCode = ""
+                    tagList[position] = newTag
+                    adapter.notifyDataSetChanged()
+                    isViewSelected = false
+                    selectedIndex = -1
+                }
+                Status.LOADING -> {
+                    progress.show()
+                }
+                Status.ERROR -> {
+                    val newTag = BinTag()
+                    newTag.tagIndex = displayIndex
+                    newTag.tagCode = ""
+                    tagList[position] = newTag
+                    adapter.notifyDataSetChanged()
+                    isViewSelected = false
+                    selectedIndex = -1
+                    progress.hide()
+                }
+            }
+        })
     }
 
     private fun observeVerifyTag() {
@@ -160,12 +210,10 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun clearScreen() {
-        txtPackageCode.setText("")
-        txtTagCode.setText("")
+        tagList.clear()
         adapter.removeAll()
-        adapter.notifyDataSetChanged()
+        adapter.updateList(tagList)
         tagList = ArrayList()
-        adapter = AntennaAdapter(this, tagList)
         var i = 1
         repeat(6) {
             val newTag = BinTag()
@@ -174,10 +222,11 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             tagList.add(newTag)
             i += 1
         }
+        initializeEmptyBoxes()
     }
 
     private fun initializeEmptyBoxes() {
-        adapter = AntennaAdapter(this, tagList)
+        adapter = AntennaAdapter(this, this, tagList)
         gd.adapter = adapter
     }
 
@@ -189,7 +238,8 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             val result = temp.filter { x -> x.tagCode.isNullOrEmpty() }
             tagList.filter { x -> x.tagIndex == result[0].tagIndex }[0].tagCode = tagId
         } else {
-            tagList[selectedIndex].tagCode = tagId
+            if (tagList[selectedIndex].tagCode.isNullOrEmpty())
+                tagList[selectedIndex].tagCode = tagId
         }
         adapter.notifyDataSetChanged()
         isViewSelected = false
@@ -229,17 +279,6 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun showItemNotExistDialog() {
-/*        showAlert(context = this,
-            title = "Item not found!",
-            message = "Forklift you entered was not found. Please enter an existing Forklift.",
-            icon = null,
-            positiveBtnMsg = getString(R.string.ok),
-            positiveBtnAction = {
-
-            },
-            negativeBtnMsg = null, negativeBtnAction = { }
-        )*/
-
         AlertDialog.Builder(this)
             .setTitle("Item not found!")
             .setMessage("Forklift you entered was not found. Please enter an existing Forklift.")
@@ -262,16 +301,6 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                     dialog.dismiss()
                 }
                 .show()
-/*            showAlert(context = this,
-                title = "Tag already associated!",
-                message = "$tag you entered is already associated with an Antenna",
-                icon = null,
-                positiveBtnMsg = getString(R.string.yes),
-                positiveBtnAction = {
-
-                },
-                negativeBtnMsg = null, negativeBtnAction = { }
-            )*/
             dialogTag = tag
         }
     }
@@ -289,8 +318,8 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun setUI() {
-        setSupportActionBar(toolbar);
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         handler = Handler()
 
         var i = 1;
@@ -302,7 +331,7 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             i += 1
         }
 
-        adapter = AntennaAdapter(this, tagList)
+        adapter = AntennaAdapter(this, this, tagList)
         gd.adapter = adapter
         gd.onItemClickListener = AdapterView.OnItemClickListener { parent, v, position, id ->
             selectedIndex = position
@@ -338,7 +367,23 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
             }
             false
         })
+    }
 
+    private fun setupPreTagListProcess() {
+        var i = 1;
+        repeat(6) {
+            val newTag = BinTag()
+            assignIndex(newTag, i)
+            newTag.tagCode = ""
+            tagList.add(newTag)
+            i += 1
+        }
+        adapter = AntennaAdapter(this, this, tagList)
+        gd.adapter = adapter
+        gd.onItemClickListener = AdapterView.OnItemClickListener { parent, v, position, id ->
+            selectedIndex = position
+            gd.getChildAt(position)
+        }
     }
 
     private fun setSelectionDimension(v: View) {
@@ -461,13 +506,6 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
                                 isViewSelected = false
                             }
                         }
-                        /*      val selectedIndex: Int = getTagSelectedIndex(tagId)
-                              if (selectedIndex == -1) {
-                                  addTag(tagId)
-                              } else {
-                                  //  tag[selectedIndex].isChecked = true
-                                  adapter.notifyDataSetChanged()
-                              }*/
                     }
                 }
             })
@@ -523,6 +561,31 @@ class AntennaActivity : AppCompatActivity(), IAsynchronousMessage {
 
     override fun PortClosing(p0: String?) {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
+    }
+
+    override fun removeItemFromList(position: Int, displayIndex: Int) {
+        this.displayIndex = displayIndex
+        this.position = position
+        if (binResponse != null) {
+            val releaseTagRequest = ReleaseTagRequest()
+            releaseTagRequest.entityId = binResponse?.id
+            releaseTagRequest.tagCode = tagList[position].tagCode
+            releaseTagRequest.entityType = EntityType.ANTENNA.type
+            viewModel.releaseRequest(releaseTagRequest)
+        } else {
+            val newTag = BinTag()
+            newTag.tagIndex = displayIndex
+            newTag.tagCode = ""
+            tagList[position] = newTag
+            adapter.notifyDataSetChanged()
+            isViewSelected = false
+            selectedIndex = -1
+        }
     }
 
 

@@ -1,11 +1,10 @@
 package com.limetac.scanner.data.api
 
 import com.limetac.scanner.data.api.request.*
-import com.limetac.scanner.data.model.PackagingItem
-import com.limetac.scanner.data.model.PkgDetails
-import com.limetac.scanner.data.model.User
+import com.limetac.scanner.data.model.*
 import io.reactivex.Observable
 import io.reactivex.Single
+import okhttp3.ResponseBody
 import org.json.JSONObject
 
 interface ApiService {
@@ -24,7 +23,7 @@ interface ApiService {
 
     fun submitBin(request: BinRequest): Single<BinResponse>
 
-    fun releaseTag(request: ReleaseRequest): Single<JSONObject>
+    fun releaseTag(request: ReleaseTagRequest): Single<ReleaseTagResponse>
 
     fun getEntityTag(request: EntityTagRequest): Single<BinResponse>
 
@@ -32,6 +31,6 @@ interface ApiService {
 
     fun getEntityByTag(request: EntityTagRequest): Single<List<BinResponse>>
 
-    fun createLocationHelper(request: BinRequest): Single<BinResponse>
+    fun createLocationHelper(request: ScanHelperRequest): Single<BinResponse>
 
 }

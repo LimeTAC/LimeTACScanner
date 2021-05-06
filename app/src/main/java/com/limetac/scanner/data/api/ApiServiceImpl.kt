@@ -1,13 +1,12 @@
 package com.limetac.scanner.data.api
 
 import com.limetac.scanner.data.api.request.*
-import com.limetac.scanner.data.model.PackagingItem
-import com.limetac.scanner.data.model.PkgDetails
-import com.limetac.scanner.data.model.User
+import com.limetac.scanner.data.model.*
 import com.limetac.scanner.utils.Constants.Environment.CURRENT_ENVIRONMENT
 import com.rx2androidnetworking.Rx2AndroidNetworking
 import io.reactivex.Observable
 import io.reactivex.Single
+import okhttp3.ResponseBody
 import org.json.JSONObject
 
 class ApiServiceImpl : ApiService {
@@ -60,11 +59,11 @@ class ApiServiceImpl : ApiService {
             .getObjectSingle(BinResponse::class.java)
     }
 
-    override fun releaseTag(request: ReleaseRequest): Single<JSONObject> {
-        return Rx2AndroidNetworking.post("$CURRENT_ENVIRONMENT/api/inventory/ReleaseEntityTag")
+    override fun releaseTag(request: ReleaseTagRequest): Single<ReleaseTagResponse> {
+        return Rx2AndroidNetworking.post("$CURRENT_ENVIRONMENT/api/inventory/ReleaseEntityTagV2 ")
             .addApplicationJsonBody(request)
             .build()
-            .getJSONObjectSingle();
+            .getObjectSingle(ReleaseTagResponse::class.java)
     }
 
     override fun getEntityTag(request: EntityTagRequest): Single<BinResponse> {
@@ -88,7 +87,7 @@ class ApiServiceImpl : ApiService {
             .getObjectListSingle(BinResponse::class.java)
     }
 
-    override fun createLocationHelper(request: BinRequest): Single<BinResponse> {
+    override fun createLocationHelper(request: ScanHelperRequest): Single<BinResponse> {
         return Rx2AndroidNetworking.post("$CURRENT_ENVIRONMENT/api/inventory/CreateHelperLocation/")
             .addApplicationJsonBody(request)
             .build()

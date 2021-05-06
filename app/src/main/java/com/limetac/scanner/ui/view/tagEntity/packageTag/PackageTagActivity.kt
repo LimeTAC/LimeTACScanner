@@ -329,4 +329,8 @@ class PackageTagActivity : AppCompatActivity(), IAsynchronousMessage {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
+    }
 }

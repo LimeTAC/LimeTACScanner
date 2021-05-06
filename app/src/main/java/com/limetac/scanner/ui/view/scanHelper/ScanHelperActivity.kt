@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.limetac.scanner.R
 import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.api.ApiServiceImpl
+import com.limetac.scanner.data.api.request.BinResponse
+import com.limetac.scanner.data.api.request.ReleaseTagRequest
 import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.data.model.EntityType
 import com.limetac.scanner.reader.UHFBaseActivity
@@ -26,13 +28,16 @@ import kotlinx.android.synthetic.main.activity_package_scanning.*
 import kotlinx.android.synthetic.main.activity_package_scanning.toolbar
 import kotlinx.android.synthetic.main.activity_scan_helper.*
 
-class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
+class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage, ScanHelperNotifier {
 
     var upDataTime = 0
     var tagList = ArrayList<BinTag>()
+    var currentListSize = -1
+    var currentPosition = -1
     private lateinit var lastScanTagId: String
     private lateinit var viewModel: ScanHelperViewModel
     private lateinit var adapter: ScanHelperAdapter
+    private var binResponse: BinResponse? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +48,8 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
         setupListeners()
         observeCreateLocation()
         observeEntityDetail()
-        adapter = ScanHelperAdapter(this, ArrayList())
+        observeReleaseTag()
+        adapter = ScanHelperAdapter(this, this, ArrayList())
         activityScanHelper_scanList.layoutManager = LinearLayoutManager(this)
         activityScanHelper_scanList.adapter = adapter
     }
@@ -94,7 +100,17 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
                 Status.ERROR -> {
                     activityScanHelper_progress.hide()
-                    ToastUtil.createShortToast(this, it.message)
+                    it.message?.let { message ->
+                        if (message.contains("duplicate key")) {
+                            val tagCode =
+                                message.split(" The duplicate key value is ")[1].split("(")[1].split(
+                                    ","
+                                )[0]
+                            showTagAlreadyAssociatedDialog(tagCode)
+                        } else {
+                            ToastUtil.createShortToast(this, "Something went wrong")
+                        }
+                    }
                 }
             }
         })
@@ -107,8 +123,13 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
                     activityScanHelper_progress.hide()
                     tagList.clear()
                     adapter.removeAllItems()
-                    it.data?.tagDetails?.let { it1 -> tagList.addAll(it1) }
-                    adapter = ScanHelperAdapter(this, tagList)
+                    it.data?.let { entity ->
+                        binResponse = entity
+                    }
+                    it.data?.tagDetails?.let { it1 ->
+                        tagList.addAll(it1)
+                    }
+                    adapter = ScanHelperAdapter(this, this, tagList)
                     activityScanHelper_scanList.adapter = adapter
                     activityScanHelper_count.text = (tagList.size).toString()
                 }
@@ -117,11 +138,40 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
                 Status.ERROR -> {
                     activityScanHelper_progress.hide()
-                  //  ToastUtil.createShortToast(this, it.message)
                 }
             }
         })
     }
+
+    private fun observeReleaseTag() {
+        viewModel.getReleaseLiveData().observe(this, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    activityScanHelper_progress.hide()
+                    ToastUtil.createShortToast(
+                        this@ScanHelperActivity,
+                        "Tag has been released successfully"
+                    )
+                    tagList.removeAt(currentPosition)
+                    adapter.notifyItemRemoved(currentPosition)
+                    adapter.updateTagList(tagList)
+                    activityScanHelper_count.text = tagList.size.toString()
+                }
+                Status.LOADING -> {
+                    activityScanHelper_progress.show()
+                }
+                Status.ERROR -> {
+                    activityScanHelper_progress.hide()
+                    tagList.removeAt(currentPosition)
+                    adapter.notifyItemRemoved(currentPosition)
+                    adapter.updateTagList(tagList)
+                    activityScanHelper_count.text = tagList.size.toString()
+                    //  ToastUtil.createShortToast(this@ScanHelperActivity, it.message)
+                }
+            }
+        })
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -148,12 +198,26 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
                 android.R.string.yes
             ) { dialog, _ ->
                 adapter.removeAllItems()
+                activityScanHelper_txtTagCode.setText("")
                 dialog.dismiss()
             }.setNegativeButton(android.R.string.no) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
     }
+
+    private fun showTagAlreadyAssociatedDialog(tag: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Tag Already Associated!")
+            .setMessage("The tag: $tag you scanned is already associated with an other entity.")
+            .setPositiveButton(
+                android.R.string.ok
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
 
     //initialization
     fun init() {
@@ -279,5 +343,27 @@ class ScanHelperActivity : AppCompatActivity(), IAsynchronousMessage {
 
     override fun PortClosing(p0: String?) {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
+    }
+
+    override fun onItemRemovedFromList(position: Int, size: Int) {
+        currentListSize = size
+        currentPosition = position
+        if (binResponse != null) {
+            val releaseTagRequest = ReleaseTagRequest()
+            releaseTagRequest.tagCode = tagList[currentPosition].tagCode
+            releaseTagRequest.entityId = binResponse?.id
+            releaseTagRequest.entityType = EntityType.LOCATION.type
+            viewModel.releaseRequest(releaseTagRequest)
+        } else {
+            tagList.removeAt(currentPosition)
+            adapter.notifyItemRemoved(currentPosition)
+            adapter.updateTagList(tagList)
+            activityScanHelper_count.text = tagList.size.toString()
+        }
     }
 }

@@ -51,7 +51,7 @@
     <string name="package_tag_title">Package Tag</string>
     <string name="copy_code">Copy Code</string>
     <string name="scan_next_tag">Scan Next Tag</string>
-    <string name="multi_entity">Multi Entity</string>
+    <string name="multi_entity">Bin Entity</string>
     <string name="scan_helper">Scan Helper</string>
     <string name="helper_tag">Helper Tag</string>
     <string name="tag_count">Tag Count:</string>
@@ -63,6 +63,7 @@
     <string name="package_completed">Package Completed</string>
     <string name="antenna_tag">Antenna Tag</string>
     <string name="tag_associated_with_other_entity_msg">This Tag is associated with some other entity. Please press scan next tag!</string>
+    <string name="tagIDLabel">Tag ID: </string>
 
     <string-array name="powerList">
         <item>0</item>

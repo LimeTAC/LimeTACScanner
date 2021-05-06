@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.limetac.scanner.R
 import com.limetac.scanner.data.api.request.BinResponse
 import com.limetac.scanner.data.model.BinTag
+import com.limetac.scanner.reader.UHFBaseActivity
 import com.limetac.scanner.utils.Constants
+import com.rfidread.RFIDReader
 import kotlinx.android.synthetic.main.activity_bin_tag.*
 
 class BinTagActivity : AppCompatActivity() {

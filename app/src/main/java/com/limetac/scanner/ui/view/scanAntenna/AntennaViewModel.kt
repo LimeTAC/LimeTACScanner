@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.limetac.scanner.data.api.request.BinResponse
 import com.limetac.scanner.data.api.request.EntityTagRequest
 import com.limetac.scanner.data.api.request.ForkliftRequest
+import com.limetac.scanner.data.api.request.ReleaseTagRequest
 import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.data.model.EntityType
+import com.limetac.scanner.data.model.ReleaseTagResponse
 import com.limetac.scanner.data.repository.AntennaRepository
 import com.limetac.scanner.utils.Resource
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,7 +22,7 @@ class AntennaViewModel(private val repository: AntennaRepository) : ViewModel() 
     private val entityDetails = MutableLiveData<Resource<BinResponse>>()
     private val verifyTag = MutableLiveData<Resource<BinResponse>>()
     private val compositeDisposable = CompositeDisposable()
-
+    private val releaseDetails = MutableLiveData<Resource<ReleaseTagResponse>>()
 
     fun submitAntenna(binCode: String, tags: List<BinTag>) {
         val request = ForkliftRequest()
@@ -43,7 +45,6 @@ class AntennaViewModel(private val repository: AntennaRepository) : ViewModel() 
                 })
         )
     }
-
 
     fun getEntity(code: String) {
         val request = EntityTagRequest()
@@ -79,6 +80,19 @@ class AntennaViewModel(private val repository: AntennaRepository) : ViewModel() 
         )
     }
 
+    fun releaseRequest(releaseTagRequest: ReleaseTagRequest) {
+        compositeDisposable.add(
+            repository.releaseTag(releaseTagRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    releaseDetails.postValue(Resource.success(it))
+                }, {
+                    releaseDetails.postValue(Resource.error(it.message.toString(), null))
+                })
+        )
+    }
+
     fun getDetails(): LiveData<Resource<BinResponse>> {
         return details;
     }
@@ -89,6 +103,10 @@ class AntennaViewModel(private val repository: AntennaRepository) : ViewModel() 
 
     fun getVerifyTag(): LiveData<Resource<BinResponse>> {
         return verifyTag;
+    }
+
+    fun getReleaseLiveData(): LiveData<Resource<ReleaseTagResponse>> {
+        return releaseDetails;
     }
 
 }

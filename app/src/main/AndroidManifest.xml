@@ -21,7 +21,7 @@
         tools:ignore="AllowBackup">
         <activity android:name="com.limetac.scanner.ui.view.tagEntity.binTag.BinTagActivity"/>
         <activity android:name="com.limetac.scanner.ui.view.tagEntity.helperTag.HelperTagActivity" />
-        <activity android:name="com.limetac.scanner.ui.view.tagEntity.multiEntity.MultiEntityActivity" />
+        <activity android:name="com.limetac.scanner.ui.view.tagEntity.sharedBin.SharedBinActivity" />
         <activity
             android:name="com.limetac.scanner.ui.view.scanHelper.ScanHelperActivity"
             android:windowSoftInputMode="adjustPan" />

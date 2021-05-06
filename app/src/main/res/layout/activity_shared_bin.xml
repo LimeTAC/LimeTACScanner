@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.view.tagEntity.multiEntity.MultiEntityActivity">
+    tools:context=".ui.view.tagEntity.sharedBin.SharedBinActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/activityMultiEntity_toolbar"
+        android:id="@+id/activitySharedBin_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorToolbar"
@@ -23,31 +23,52 @@
             android:text="@string/multi_entity" />
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLineStart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/activityMultiEntity_title"
+        android:id="@+id/activitySharedBin_tagID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="48dp"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/guideLineStart"
+        app:layout_constraintTop_toBottomOf="@+id/activitySharedBin_toolbar"
+        tools:text="TagID: adajkj2139usajkda" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/activitySharedBin_bin1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
         android:fontFamily="@font/neue_bold"
-        android:gravity="center"
+        android:gravity="start"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityMultiEntity_toolbar"
-        tools:text="Tag Name" />
+        app:layout_constraintStart_toStartOf="@id/guideLineStart"
+        app:layout_constraintTop_toBottomOf="@+id/activitySharedBin_tagID"
+        tools:text="Bin1 - Right Tag" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/activityMultiEntity_entityContainer"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/activitySharedBin_bin2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
+        android:layout_weight="1"
+        android:fontFamily="@font/neue_bold"
+        android:gravity="start"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityMultiEntity_title" />
+        app:layout_constraintStart_toStartOf="@id/guideLineStart"
+        app:layout_constraintTop_toBottomOf="@+id/activitySharedBin_bin1"
+        tools:text="Bin2 - Left Tag" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/activityMultiEntity_scanTagBtn"
+        android:id="@+id/activitySharedBin_scanTagBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/primaryColor"

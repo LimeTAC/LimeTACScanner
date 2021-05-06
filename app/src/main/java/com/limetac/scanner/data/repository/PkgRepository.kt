@@ -2,12 +2,10 @@ package com.limetac.scanner.data.repository
 
 import com.google.gson.JsonObject
 import com.limetac.scanner.data.api.ApiHelper
-import com.limetac.scanner.data.api.request.AddPkgRequest
-import com.limetac.scanner.data.api.request.BinResponse
-import com.limetac.scanner.data.api.request.EntityTagRequest
-import com.limetac.scanner.data.api.request.PkgRequest
+import com.limetac.scanner.data.api.request.*
 import com.limetac.scanner.data.model.PackagingItem
 import com.limetac.scanner.data.model.PkgDetails
+import com.limetac.scanner.data.model.ReleaseTagResponse
 import com.limetac.scanner.data.model.User
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -19,9 +17,14 @@ class PkgRepository(private val apiHelper: ApiHelper) {
         return apiHelper.getTagsByPkg(request)
     }
 
-    fun releaseTag(request: PkgRequest): Single<JSONObject> {
+  /*  fun releaseTag(request: PkgRequest): Single<JSONObject> {
+        return apiHelper.releasePackageTag(request)
+    }*/
+
+    fun releaseTag(request: ReleaseTagRequest): Single<ReleaseTagResponse> {
         return apiHelper.releaseTag(request)
     }
+
     fun getTagsByTag(request:PkgRequest): Single<PkgDetails> {
         return apiHelper.getTagsByTag(request)}
 

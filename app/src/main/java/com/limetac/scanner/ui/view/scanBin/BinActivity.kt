@@ -25,20 +25,29 @@ import androidx.lifecycle.ViewModelProviders
 import com.limetac.scanner.R
 import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.api.ApiServiceImpl
+import com.limetac.scanner.data.api.request.BinResponse
+import com.limetac.scanner.data.api.request.ReleaseTagRequest
 import com.limetac.scanner.data.model.BinTag
+import com.limetac.scanner.data.model.EntityType
 import com.limetac.scanner.reader.UHFBaseActivity.ConnID
 import com.limetac.scanner.ui.base.ViewModelFactory
 import com.limetac.scanner.ui.adapter.BinAdapter
 import com.limetac.scanner.utils.ScreenUtils
 import com.limetac.scanner.utils.Status
+import com.limetac.scanner.utils.ToastUtil
 import com.rfidread.Interface.IAsynchronousMessage
 import com.rfidread.Models.Tag_Model
 import com.rfidread.RFIDReader
 import kotlinx.android.synthetic.main.activity_bin.*
+import kotlinx.android.synthetic.main.activity_bin.btnSubmit
+import kotlinx.android.synthetic.main.activity_bin.progress
+import kotlinx.android.synthetic.main.activity_bin.toolbar
+import kotlinx.android.synthetic.main.activity_bin.txtTagCode
+import kotlinx.android.synthetic.main.activity_package_scanning.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class BinActivity : AppCompatActivity(), IAsynchronousMessage {
-
 
     private lateinit var viewModel: BinViewModel
     var tag = ArrayList<BinTag>()
@@ -46,6 +55,8 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
     var upDataTime = 0
     var view: View? = null
     var previousBinCode: String = ""
+    var tagViews = ArrayList<TextView>()
+    var binResponse: BinResponse? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +65,7 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
         setUI()
         setupViewModel()
         setObserver()
+        observeReleaseTag()
     }
 
     private fun setObserver() {
@@ -86,9 +98,10 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
                 Status.SUCCESS -> {
                     progress.hide()
                     it.data?.let { details ->
+                        binResponse = details
                         details.tagDetails?.let {
                             for (tag in it) {
-                                if (tag.isRight)
+                                if (tag.tagType == 1)
                                     addTag(tag.tagCode!!, true)
                                 else
                                     addTag(tag.tagCode!!, false)
@@ -101,9 +114,6 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
                 Status.ERROR -> {
                     progress.hide()
-                    /*   it?.message?.let {
-                           Toast.makeText(this, it, Toast.LENGTH_LONG).show()
-                       }*/
                     right.removeAllViews()
                     left.removeAllViews()
                     setDefaultDimension(left)
@@ -141,6 +151,26 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
 
     }
 
+    private fun observeReleaseTag() {
+        viewModel.getReleaseLiveData().observe(this, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    progress.hide()
+                    ToastUtil.createShortToast(
+                        this@BinActivity,
+                        "Tag has been released successfully"
+                    )
+                }
+                Status.LOADING -> {
+                    progress.show()
+                }
+                Status.ERROR -> {
+                    progress.hide()
+                }
+            }
+        })
+    }
+
     private fun validateTags(): Boolean {
         var rightTag = 0
         var leftTag = 0
@@ -157,7 +187,6 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
         onBackPressed()
         return true
     }
-
 
     private fun clearScreen() {
         txtCode.setText("")
@@ -210,18 +239,23 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
 
         Builder(this)
             .setTitle(tagCode)
-            .setMessage("Are you sure you want to delete this tag?") // Specifying a listener allows you to take an action before dismissing the dialog.
-            // The dialog is automatically dismissed when a dialog button is clicked.
-            .setPositiveButton(android.R.string.yes,
-                DialogInterface.OnClickListener { dialog, which ->
-                    view.removeView(tv)
-                    if (view.childCount == 0)
-                        view.background = resources.getDrawable(R.drawable.cd_bg)
-                    removeTagFromList(code)
-                    // Continue with delete operation
+            .setMessage("Are you sure you want to delete this tag?")
+            .setPositiveButton(
+                android.R.string.yes
+            ) { dialog, which ->
+                view.removeView(tv)
+                if (view.childCount == 0)
+                    view.background = resources.getDrawable(R.drawable.cd_bg)
+                removeTagFromList(code)
 
-                    //viewModel.releaseTag(tagCode)
-                }) // A null listener allows the button to dismiss the dialog and take no further action.
+                binResponse?.let {
+                    val releaseTagRequest = ReleaseTagRequest()
+                    releaseTagRequest.entityId = it.id
+                    releaseTagRequest.tagCode = tv.tag.toString()
+                    releaseTagRequest.entityType = EntityType.BIN.type
+                    viewModel.releaseRequest(releaseTagRequest)
+                }
+            }
             .setNegativeButton(android.R.string.no) { dialog, which -> } //)
             .show()
     }
@@ -300,6 +334,7 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
             tag.add(binTag)
             val valueTV = TextView(this)
             valueTV.text = code.takeLast(3)
+            valueTV.tag = code
             val typeface: Typeface =
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     resources.getFont(R.font.neue_black)
@@ -308,8 +343,8 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
 
             valueTV.typeface = typeface
-            valueTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f);
-            valueTV.setTextColor(resources.getColor(R.color.primaryFontColor))
+            valueTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28f);
+            valueTV.setTextColor(resources.getColor(R.color.white))
             valueTV.gravity = Gravity.CENTER
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -330,6 +365,17 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
             } else {
                 (left as LinearLayoutCompat).addView(valueTV)
                 left.background = resources.getDrawable(R.color.primaryColor)
+            }
+            tagViews.add(valueTV)
+            highlightCurrent(valueTV)
+        }
+    }
+
+    private fun highlightCurrent(view: TextView) {
+        for (tagView in tagViews) {
+            if (tagView != view) {
+                tagView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f);
+                tagView.setTextColor(resources.getColor(R.color.primaryFontColor))
             }
         }
     }
@@ -507,5 +553,8 @@ class BinActivity : AppCompatActivity(), IAsynchronousMessage {
 
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(ConnID)
+    }
 }

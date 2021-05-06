@@ -1,11 +1,10 @@
 package com.limetac.scanner.data.repository
 
 import com.limetac.scanner.data.api.ApiHelper
-import com.limetac.scanner.data.api.request.BinRequest
-import com.limetac.scanner.data.api.request.BinResponse
-import com.limetac.scanner.data.api.request.EntityTagRequest
-import com.limetac.scanner.data.api.request.ReleaseRequest
+import com.limetac.scanner.data.api.request.*
+import com.limetac.scanner.data.model.ReleaseTagResponse
 import io.reactivex.Single
+import okhttp3.ResponseBody
 import org.json.JSONObject
 
 class BinRepository(private val apiHelper: ApiHelper) {
@@ -14,7 +13,7 @@ class BinRepository(private val apiHelper: ApiHelper) {
         return apiHelper.submitBin(request)
     }
 
-    fun releaseTag(request: ReleaseRequest): Single<JSONObject> {
+    fun releaseTag(request: ReleaseTagRequest): Single<ReleaseTagResponse> {
         return apiHelper.releaseTag(request)
     }
     fun getEntityTags(request: EntityTagRequest): Single<BinResponse> {

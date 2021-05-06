@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.limetac.scanner.data.api.request.BinRequest
 import com.limetac.scanner.data.api.request.BinResponse
 import com.limetac.scanner.data.api.request.EntityTagRequest
+import com.limetac.scanner.data.api.request.ReleaseTagRequest
 import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.data.model.EntityType
+import com.limetac.scanner.data.model.ReleaseTagResponse
 import com.limetac.scanner.data.repository.BinRepository
 import com.limetac.scanner.utils.Resource
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,6 +21,7 @@ class BinViewModel(private val repository: BinRepository) : ViewModel() {
     private val binDetails = MutableLiveData<Resource<BinResponse>>()
     private val entityDetails = MutableLiveData<Resource<BinResponse>>()
     private val compositeDisposable = CompositeDisposable()
+    private val releaseDetails = MutableLiveData<Resource<ReleaseTagResponse>>()
 
 
     fun submitBin(binCode: String, tags: List<BinTag>) {
@@ -55,7 +58,7 @@ class BinViewModel(private val repository: BinRepository) : ViewModel() {
         )
     }
 
-    public fun releaseRequest(binCode: String, tags: List<BinTag>) {
+/*    fun releaseRequest(binCode: String, tags: List<BinTag>) {
         val request = BinRequest()
         request.tagList = tags
         request.locationCode = binCode
@@ -70,6 +73,19 @@ class BinViewModel(private val repository: BinRepository) : ViewModel() {
                     binDetails.postValue(Resource.error("Something Went Wrong", null))
                 })
         )
+    }*/
+
+    fun releaseRequest(releaseTagRequest: ReleaseTagRequest) {
+        compositeDisposable.add(
+            repository.releaseTag(releaseTagRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    releaseDetails.postValue(Resource.success(it))
+                }, {
+                    releaseDetails.postValue(Resource.error(it.message.toString(), null))
+                })
+        )
     }
 
     fun getBinDetails(): LiveData<Resource<BinResponse>> {
@@ -78,6 +94,10 @@ class BinViewModel(private val repository: BinRepository) : ViewModel() {
 
     fun getEntityDetails(): LiveData<Resource<BinResponse>> {
         return entityDetails;
+    }
+
+    fun getReleaseLiveData(): LiveData<Resource<ReleaseTagResponse>> {
+        return releaseDetails;
     }
 
 }

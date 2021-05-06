@@ -1,5 +1,6 @@
 package com.limetac.scanner.ui.view.scanHelper
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,11 @@ import com.limetac.scanner.R
 import com.limetac.scanner.data.model.BinTag
 import com.limetac.scanner.ui.view.scanHelper.ScanHelperAdapter.MyViewHolder
 
-class ScanHelperAdapter(private val context: Context, private var tagList: ArrayList<BinTag>) :
+class ScanHelperAdapter(
+    private val context: Context,
+    private val scanHelperNotifier: ScanHelperNotifier,
+    private var tagList: ArrayList<BinTag>
+) :
     RecyclerView.Adapter<MyViewHolder>() {
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView = view.findViewById<View>(R.id.itemHelperScan_tagName) as TextView
@@ -30,6 +35,10 @@ class ScanHelperAdapter(private val context: Context, private var tagList: Array
             holder.title.setTextColor(context.resources.getColor(R.color.primaryColor))
             holder.title.textSize = 28f
         }
+
+        holder.title.setOnClickListener {
+            confirmDeleteDialog(position, holder.title.text.toString())
+        }
     }
 
     override fun getItemCount(): Int {
@@ -44,5 +53,27 @@ class ScanHelperAdapter(private val context: Context, private var tagList: Array
     fun removeAllItems() {
         this.tagList.clear()
         notifyDataSetChanged()
+    }
+
+    private fun removeItemFromList(position: Int) {
+//        tagList.removeAt(position)
+//        notifyItemRemoved(position)
+//        updateTagList(tagList)
+        scanHelperNotifier.onItemRemovedFromList(position,tagList.size)
+    }
+
+    private fun confirmDeleteDialog(position: Int, tagName: String) {
+        AlertDialog.Builder(context)
+            .setTitle("Warning!")
+            .setMessage("Are you sure you want to remove tag: $tagName ?")
+            .setPositiveButton(
+                android.R.string.yes
+            ) { dialog, _ ->
+                removeItemFromList(position)
+                dialog.dismiss()
+            }.setNegativeButton(android.R.string.no) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

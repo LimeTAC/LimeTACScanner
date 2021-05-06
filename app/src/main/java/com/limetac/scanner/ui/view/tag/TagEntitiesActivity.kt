@@ -241,4 +241,9 @@ class TagEntitiesActivity : AppCompatActivity(), IAsynchronousMessage {
     override fun PortClosing(p0: String?) {
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
+    }
 }

@@ -23,7 +23,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.limetac.scanner.R
 import com.limetac.scanner.data.api.ApiHelper
 import com.limetac.scanner.data.api.ApiServiceImpl
-import com.limetac.scanner.data.model.Tag
+import com.limetac.scanner.data.api.request.BinResponse
+import com.limetac.scanner.data.api.request.ReleaseTagRequest
+import com.limetac.scanner.data.model.*
 import com.limetac.scanner.reader.UHFBaseActivity.ConnID
 import com.limetac.scanner.ui.adapter.TagAdapter
 import com.limetac.scanner.ui.base.ViewModelFactory
@@ -49,6 +51,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     var selectedItem: String = ""
     var previousScanId: String = ""
     var hasScanned = false
+    var pkgDetails: PkgDetails? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +60,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         setUI()
         setupViewModel()
         setObserver()
+        observeReleaseTag()
     }
 
     //initialization
@@ -84,6 +88,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     hasScanned = false
                     progress.hide()
                     it.data?.let { details ->
+                        pkgDetails = details
                         details.tags?.let { tags ->
                             if (tags.size <= tagList.size) {
                                 tags.forEachIndexed { index, element ->
@@ -194,20 +199,35 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                 }
             }
         })
-/*        btnSubmit.setOnClickListener {
-            if (txtPackageCode.text != null && !txtPackageCode.text.isNullOrEmpty()) {
-                if (selectedItem == getString(R.string.select_packaging))
-                    viewModel.submitPkg(txtPackageCode.text.toString(), tagList, "")
-                else viewModel.submitPkg(txtPackageCode.text.toString(), tagList, selectedItem)
-            }
-        }*/
+
         btnClearScreen.setOnClickListener {
             clearScreen()
         }
     }
 
+    private fun observeReleaseTag() {
+        viewModel.getReleaseLiveData().observe(this, {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    progress.hide()
+                    ToastUtil.createShortToast(
+                        this@PackageScanningActivity,
+                        "Tag has been released successfully"
+                    )
+                }
+                Status.LOADING -> {
+                    progress.show()
+                }
+                Status.ERROR -> {
+                    progress.hide()
+                }
+            }
+        })
+    }
+
+
     private fun insertTag() {
-        if (verifyTagListSize()) {
+        if (!verifyTagListSize()) {
             if (selectedItem == getString(R.string.select_packaging)) {
                 viewModel.submitPkg(txtPackageCode.text.toString(), tagList, "")
             } else {
@@ -319,9 +339,15 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     }
 
     private fun removeTag(position: Int, tagCode: String) {
+        pkgDetails?.let {
+            val releaseTagRequest = ReleaseTagRequest()
+            releaseTagRequest.entityId = it.id
+            releaseTagRequest.entityType = EntityType.PACKAGE.type
+            releaseTagRequest.tagCode = tagCode
+            viewModel.releaseRequest(releaseTagRequest)
+        }
         adapter.removeItem(position)
         adapter.notifyDataSetChanged()
-        viewModel.releaseTag(tagCode)
     }
 
     private fun setupViewModel() {
@@ -523,5 +549,8 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(ConnID)
+    }
 }

@@ -16,7 +16,7 @@ import com.limetac.scanner.ui.base.ViewModelFactory
 import com.limetac.scanner.ui.view.tagEntity.antennaTag.AntennaTagActivity
 import com.limetac.scanner.ui.view.tagEntity.binTag.BinTagActivity
 import com.limetac.scanner.ui.view.tagEntity.helperTag.HelperTagActivity
-import com.limetac.scanner.ui.view.tagEntity.multiEntity.MultiEntityActivity
+import com.limetac.scanner.ui.view.tagEntity.sharedBin.SharedBinActivity
 import com.limetac.scanner.ui.view.tagEntity.packageTag.PackageTagActivity
 import com.limetac.scanner.utils.Constants
 import com.limetac.scanner.utils.Constants.Entity.FORKLIFT
@@ -66,10 +66,11 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     it.data?.let { binResponse ->
                         isScanned = false
                         if (binResponse.size > 1) {
-                            val intent = Intent(this, MultiEntityActivity::class.java)
+                            val intent = Intent(this, SharedBinActivity::class.java)
                             intent.putExtra("EntityList", Gson().toJson(binResponse))
                             intent.putExtra(Constants.TagScanning.SCANNED_TAG_KEY, scannedTag)
                             startActivity(intent)
+
                         } else {
                             val response = binResponse[0]
                             if (response.isBin) {
@@ -251,5 +252,10 @@ class TagScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
     override fun PortClosing(p0: String?) {
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
     }
 }

@@ -92,53 +92,53 @@ class HelperTagActivity : AppCompatActivity(), IAsynchronousMessage {
                     isScanned = false
                     activityHelperTag_progress.hide()
                     it.data?.let { binResponse ->
-                              if (binResponse.size > 1) {
-                                  ToastUtil.createLongToast(
-                                      this,
-                                      getString(R.string.tag_associated_with_other_entity_msg)
-                                  )
-                              } else {
-                        if (binResponse[0].isBin) {
+                        if (binResponse.size > 1) {
                             ToastUtil.createLongToast(
                                 this,
                                 getString(R.string.tag_associated_with_other_entity_msg)
                             )
                         } else {
-                        if (binResponse.isNotEmpty()) {
-                            when (binResponse[0].type) {
-                                Constants.Entity.PACKAGE -> {
-                                    ToastUtil.createLongToast(
-                                        this,
-                                        getString(R.string.tag_associated_with_other_entity_msg)
-                                    )
-                                }
-                                Constants.Entity.FORKLIFT -> {
-                                    ToastUtil.createLongToast(
-                                        this,
-                                        getString(R.string.tag_associated_with_other_entity_msg)
-                                    )
-                                }
-                                Constants.Entity.LOCATION -> {
-                                    val codeExist = doesCodeExist()
-                                    if (codeExist) {
-                                        this@HelperTagActivity.binResponse.tagDetails?.let { tagList ->
-                                            adapter = HelperTagAdapter(
+                            if (binResponse[0].isBin) {
+                                ToastUtil.createLongToast(
+                                    this,
+                                    getString(R.string.tag_associated_with_other_entity_msg)
+                                )
+                            } else {
+                                if (binResponse.isNotEmpty()) {
+                                    when (binResponse[0].type) {
+                                        Constants.Entity.PACKAGE -> {
+                                            ToastUtil.createLongToast(
                                                 this,
-                                                scannedTag,
-                                                tagList as ArrayList<BinTag>
+                                                getString(R.string.tag_associated_with_other_entity_msg)
                                             )
-                                            activityHelperTag_scanList.adapter = adapter
                                         }
-                                    } else {
-                                        ToastUtil.createLongToast(
-                                            this,
-                                            "This Tag is associated with some other Location. Please press scan next tag!"
-                                        )
+                                        Constants.Entity.FORKLIFT -> {
+                                            ToastUtil.createLongToast(
+                                                this,
+                                                getString(R.string.tag_associated_with_other_entity_msg)
+                                            )
+                                        }
+                                        Constants.Entity.LOCATION -> {
+                                            val codeExist = doesCodeExist()
+                                            if (codeExist) {
+                                                this@HelperTagActivity.binResponse.tagDetails?.let { tagList ->
+                                                    adapter = HelperTagAdapter(
+                                                        this,
+                                                        scannedTag,
+                                                        tagList as ArrayList<BinTag>
+                                                    )
+                                                    activityHelperTag_scanList.adapter = adapter
+                                                }
+                                            } else {
+                                                ToastUtil.createLongToast(
+                                                    this,
+                                                    "This Tag is associated with some other Location. Please press scan next tag!"
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
-                               }
-                               }
                         }
                     }
                 }
@@ -269,5 +269,10 @@ class HelperTagActivity : AppCompatActivity(), IAsynchronousMessage {
 
     override fun PortClosing(p0: String?) {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(UHFBaseActivity.ConnID)
     }
 }

@@ -47,6 +47,13 @@ class SettingsActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        RFIDReader._Config.Stop(ConnID)
+    }
+
+
+
     private fun processPowerValueRange() {
         if (_Max_Power > 0) {
             activitySettings_seekBar.max = _Max_Power.toFloat()
