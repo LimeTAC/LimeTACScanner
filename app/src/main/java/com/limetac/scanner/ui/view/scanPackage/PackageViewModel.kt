@@ -23,10 +23,8 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     private val releaseDetails = MutableLiveData<Resource<ReleaseTagResponse>>()
 
-
-
     fun fetchTagsByPkg(code: String) {
-        val request = PkgRequest();
+        val request = PkgRequest()
         request.packageCode = code
         pkgDetails.postValue(Resource.loading(null))
         compositeDisposable.add(
@@ -40,20 +38,6 @@ class PackageViewModel(private val repository: PkgRepository) : ViewModel() {
                 })
         )
     }
-
-/*    fun releaseTag(code: String) {
-        val request = PkgRequest();
-        request.tagCode = code
-        compositeDisposable.add(
-            repository.releaseTag(request)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ pkg ->
-                }, {
-                    var error = it.message
-                })
-        )
-    }*/
 
     fun releaseRequest(releaseTagRequest: ReleaseTagRequest) {
         compositeDisposable.add(

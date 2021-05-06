@@ -52,6 +52,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     var previousScanId: String = ""
     var hasScanned = false
     var pkgDetails: PkgDetails? = null
+    var tagListSize = -1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +91,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     it.data?.let { details ->
                         pkgDetails = details
                         details.tags?.let { tags ->
-                            if (tags.size <= tagList.size) {
+                            if (tags.size <= 4) {
                                 tags.forEachIndexed { index, element ->
                                     val tag2 = Tag()
                                     tag2.tag = element
@@ -99,12 +100,12 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                                 }
                                 adapter = TagAdapter(this, tagList, lastScanTagId)
                                 gd.adapter = adapter
-                            } else
-                                DialogUtil.showOKDialog(
-                                    this,
+                            } else {
+                                showDeleteAllTagsDialog(
                                     "Alert",
-                                    "Something went wrong. Please notify LimeTAC with package id"
+                                    "There is an issue with this package. Would you like to clear all tags ?"
                                 )
+                            }
                         }
                     }
                 }
@@ -195,7 +196,6 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
                     hasScanned = false
                     progress.hide()
                     ToastUtil.createShortToast(this, it.message)
-                    //  removeLatestTag()
                 }
             }
         })
@@ -210,10 +210,21 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             when (it.status) {
                 Status.SUCCESS -> {
                     progress.hide()
-                    ToastUtil.createShortToast(
-                        this@PackageScanningActivity,
-                        "Tag has been released successfully"
-                    )
+                    if (tagListSize != -1) {
+                        tagListSize--
+                        if (tagListSize == 0) {
+                            ToastUtil.createShortToast(
+                                this@PackageScanningActivity,
+                                "All tags have been released successfully"
+                            )
+                            tagListSize = -1
+                        }
+                    } else {
+                        ToastUtil.createShortToast(
+                            this@PackageScanningActivity,
+                            "Tag has been released successfully"
+                        )
+                    }
                 }
                 Status.LOADING -> {
                     progress.show()
@@ -227,7 +238,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
 
 
     private fun insertTag() {
-        if (!verifyTagListSize()) {
+        if (verifyTagListSize()) {
             if (selectedItem == getString(R.string.select_packaging)) {
                 viewModel.submitPkg(txtPackageCode.text.toString(), tagList, "")
             } else {
@@ -273,7 +284,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     private fun initializeEmptyBoxes() {
         tagList.clear()
         repeat(4) {
-            var newTag = Tag()
+            val newTag = Tag()
             newTag.tag = ""
             tagList.add(newTag)
         }
@@ -334,8 +345,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             }
             .setNegativeButton(android.R.string.no) { dialog, which ->
 
-            }
-            .show()
+            }.show()
     }
 
     private fun removeTag(position: Int, tagCode: String) {
@@ -362,7 +372,7 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         handler = Handler()
         repeat(4) {
-            var newTag = Tag()
+            val newTag = Tag()
             newTag.tag = ""
             tagList.add(newTag)
         }
@@ -384,10 +394,9 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             }
             false
         })
+
         txtTagCode.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                /*   viewModel.fetchTagsByTags(txtTagCode.text.toString())
-                   ScreenUtils.hideKeyboard(this)*/
                 val selectedIndex: Int = getTagSelectedIndex(txtTagCode.text.toString())
                 if (selectedIndex == -1) {
                     addTag(txtTagCode.text.toString())
@@ -521,7 +530,6 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
             val runnable = Runnable {
                 handler.post {
                     packageCode?.let { txtPackageCode.setText(it) }
-
                     if (txtPackageCode.text.toString() !== packageCode) {
                         clearScreen()
                         packageCode?.let {
@@ -552,5 +560,33 @@ class PackageScanningActivity : AppCompatActivity(), IAsynchronousMessage {
     override fun onDestroy() {
         super.onDestroy()
         RFIDReader._Config.Stop(ConnID)
+    }
+
+    private fun deleteTagFromServer(code: String, entityID: Long) {
+        val releaseTagRequest = ReleaseTagRequest()
+        releaseTagRequest.entityType = EntityType.PACKAGE.type
+        releaseTagRequest.tagCode = code
+        releaseTagRequest.entityId = entityID
+        viewModel.releaseRequest(releaseTagRequest)
+    }
+
+    private fun showDeleteAllTagsDialog(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(
+                android.R.string.yes
+            ) { dialog, _ ->
+                pkgDetails?.tags?.let { tagList ->
+                    tagListSize = tagList.size
+                    for (tag in tagList) {
+                        deleteTagFromServer(tag, pkgDetails!!.id)
+                    }
+                }
+            }
+            .setNegativeButton(android.R.string.no) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }
